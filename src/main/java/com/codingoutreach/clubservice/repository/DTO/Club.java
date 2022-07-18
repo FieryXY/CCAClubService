@@ -34,4 +34,7 @@ public class Club {
     @NotBlank
     private String profile_picture_url;
 
+    
+
 }
+
