@@ -17,7 +17,7 @@ import java.io.IOException;
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
-    @Autowired private ClubUserService clubUserService;
+    @Autowired private ClubUserService  userDetailsService;
     @Autowired private JWTUtil jwtUtil;
 
     @Override
@@ -32,7 +32,7 @@ public class JWTFilter extends OncePerRequestFilter {
             }else {
                 try{
                     String email = jwtUtil.validateTokenAndRetrieveSubject(jwt);
-                    UserDetails userDetails = clubUserService.loadUserByUsername(email);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(email, userDetails.getPassword(), userDetails.getAuthorities());
                     if(SecurityContextHolder.getContext().getAuthentication() == null){
