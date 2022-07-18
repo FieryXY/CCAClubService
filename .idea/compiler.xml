@@ -12,7 +12,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="clubservice" target="9" />
+      <module name="clubservice" target="11" />
       <module name="javaspringboottemplate" target="1.8" />
       <module name="template" target="11" />
     </bytecodeTargetLevel>
