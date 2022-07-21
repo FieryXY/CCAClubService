@@ -64,9 +64,9 @@ public class ClubRepository {
     }
 
     public int createNewClub(Club club) {
-        return jdbcTemplate.update(SAVE_CLUB, club.getClubID(), club.getEmail(), club.getEncoded_password(),
-                club.getName(), club.getDescription(), club.getMeet_time(),
-                club.getProfile_picture_url());
+        return jdbcTemplate.update(SAVE_CLUB, club.getClubID(), club.getEmail(), club.getEncodedPassword(),
+                club.getName(), club.getDescription(), club.getMeetTime(),
+                club.getProfilePictureUrl());
     }
     
     public Club getClubByClubId(UUID clubId) {
@@ -125,12 +125,13 @@ public class ClubRepository {
     public RowMapper<Club> mapClub() {
         return ((resultSet, i) -> {
             UUID clubID = UUID.fromString(resultSet.getString("club_id"));
-            String username = resultSet.getString("username");
+            String email = resultSet.getString("email");
             String encoded_password = resultSet.getString("encoded_password");
             String name = resultSet.getString("name");
             String description = resultSet.getString("description");
             String profile_picture_url = resultSet.getString("profile_picture_url");
-            return new Club(clubID, username, encoded_password, name, description, profile_picture_url);
+            String meet_time = resultSet.getString("meet_time");
+            return new Club(clubID, email, encoded_password, name, description, meet_time, profile_picture_url);
         });
     }
 
