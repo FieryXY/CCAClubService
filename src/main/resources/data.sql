@@ -15,15 +15,21 @@ CREATE TABLE IF NOT EXISTS socials (
     club_id UUID NOT NULL,
     social_name VARCHAR(200) NOT NULL,
     social_link VARCHAR(200) NOT NULL,
-    FOREIGN KEY (social_id) REFERENCES club(club_id)
+    FOREIGN KEY (club_id) REFERENCES club(club_id)
+);
+
+CREATE TABLE IF NOT EXISTS category (
+    category_id UUID NOT NULL PRIMARY KEY,
+    category_name VARCHAR(200) NOT NULL
 );
 
 -- Club Tags --
 CREATE TABLE IF NOT EXISTS club_categories (
     id UUID NOT NULL PRIMARY KEY,
     club_id UUID NOT NULL,
-    category VARCHAR(200) NOT NULL,
-    FOREIGN KEY (club_id) REFERENCES club(club_id)
+    category_id UUID NOT NULL,
+    FOREIGN KEY (club_id) REFERENCES club(club_id),
+    FOREIGN KEY (category_id) REFERENCES category(category_id)
 );
 
 -- Posts List --

@@ -1,13 +1,19 @@
 package com.codingoutreach.clubservice.controllers;
 
+
 import com.codingoutreach.clubservice.repository.DTO.Club;
+import com.codingoutreach.clubservice.dos.ClubInformation;
 import com.codingoutreach.clubservice.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
+import java.util.List;
+import java.util.UUID;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+
+
 
 @RestController
 @RequestMapping(path ="/club")
@@ -30,17 +36,13 @@ public class ClubController {
         return clubService.getAllClubs();
     }
 
-    // Get Club Information
+    /**
+     * @param clubId ID of Club
+     * @return All information needed to load Club Profile page for club identified with {@code clubId}
+     */
     @GetMapping
-    @RequestMapping(path = "/{id}/info", method = GET)
-    @ResponseBody
-    public String clubInfo(@PathVariable("id") int id) {
-        return "The id is " + id;
+    @RequestMapping(path="/information/{clubId}")
+    public ClubInformation getClubInformationByClubId(@PathVariable("id") UUID clubId) {
+        return clubService.getClubInformationByClubId(clubId);
     }
-
-    // Get Clubs Based on Search Query
-
-
-
-    //Controllers Needed: Get All Clubs, Get Clubs Based on Search Query, Get Club Information, Get Club Posts, Description Change Endpoint
 }

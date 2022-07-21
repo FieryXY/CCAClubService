@@ -6,12 +6,16 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
+
+/**
+ * Database representation of row from "club" table
+ */
+ 
 // Makes getters and setters
 @Data
 
-// Creates constructors...?
+// Creates constructors
 @AllArgsConstructor
-
 public class Club {
     @NotNull
     private final UUID clubID;
@@ -20,7 +24,7 @@ public class Club {
     private String email;
 
     @NotBlank
-    private String encoded_password;
+    private String encodedPassword;
 
     @NotBlank
     private String name;
@@ -29,12 +33,9 @@ public class Club {
     private String description;
 
     @NotBlank
-    private String meet_time;
+    private String meetTime;
 
     @NotBlank
-    private String profile_picture_url;
-
-    
+    private String profilePictureUrl;
 
 }
-
