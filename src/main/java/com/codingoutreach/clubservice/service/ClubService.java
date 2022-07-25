@@ -1,6 +1,7 @@
 package com.codingoutreach.clubservice.service;
 
 
+import com.codingoutreach.clubservice.repository.DTO.Category;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.codingoutreach.clubservice.dos.ClubInformation;
@@ -43,5 +44,11 @@ public class ClubService {
                 clubSocialDOs,
                 categories
         );
+    }
+
+    public List<String> getAllTags() {
+        List<Category> categories = clubRepository.getAllCategories();
+
+        return categories.stream().map(Category::getCategoryName).collect(Collectors.toList());
     }
 }

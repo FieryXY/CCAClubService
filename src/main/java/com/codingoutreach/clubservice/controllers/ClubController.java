@@ -36,6 +36,12 @@ public class ClubController {
         return clubService.getAllClubs();
     }
 
+    @GetMapping
+    @RequestMapping(path="/tags/list")
+    public List<String> getAllTags() {
+        return clubService.getAllTags();
+    }
+
     /**
      * @param clubId ID of Club
      * @return All information needed to load Club Profile page for club identified with {@code clubId}
