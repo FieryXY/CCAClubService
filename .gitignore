@@ -4,6 +4,9 @@ target/
 !**/src/main/**
 !**/src/test/**
 data
+node
+node_modules
+.mvn
 
 ### STS ###
 .apt_generated
@@ -30,3 +33,4 @@ build/
 ### VS Code ###
 .vscode/
 .idea/
+/node_modules/

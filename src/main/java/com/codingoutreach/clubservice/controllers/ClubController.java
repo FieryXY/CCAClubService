@@ -16,7 +16,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 
 @RestController
-@RequestMapping(path ="/club")
+@RequestMapping(path ="/api/club")
 @CrossOrigin
 public class ClubController {
 
