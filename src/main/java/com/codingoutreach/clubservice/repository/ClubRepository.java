@@ -1,17 +1,14 @@
 package com.codingoutreach.clubservice.repository;
 
 
-import com.codingoutreach.clubservice.repository.DTO.Club;
-import com.codingoutreach.clubservice.repository.DTO.ClubUser;
+
+import com.codingoutreach.clubservice.repository.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.codingoutreach.clubservice.repository.DTO.Category;
 import com.codingoutreach.clubservice.repository.DTO.Club;
-import com.codingoutreach.clubservice.repository.DTO.ClubCategory;
-import com.codingoutreach.clubservice.repository.DTO.ClubSocial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -40,6 +37,8 @@ public class ClubRepository {
     private final String GET_CATEGORIES_BY_CLUB_ID_SQL = "SELECT category.category_name FROM club_categories LEFT JOIN category ON club_categories.category_id=category.category_id WHERE club_id=?";
     
     private final String GET_ALL_CATEGORIES = "SELECT * FROM category";
+
+    private final String GET_FEATURED_CLUBS = "SELECT * FROM featured_clubs";
 
 
 
@@ -83,6 +82,10 @@ public class ClubRepository {
 
     public List<Category> getAllCategories() {
         return jdbcTemplate.query(GET_ALL_CATEGORIES, mapCategory());
+    }
+
+    public List<FeaturedClubInformation> getFeaturedClubs() {
+        return jdbcTemplate.query(GET_FEATURED_CLUBS, mapFeaturedClubs());
     }
     
     //Row Mappers
@@ -146,4 +149,13 @@ public class ClubRepository {
         });
     }
 
+    public RowMapper<FeaturedClubInformation> mapFeaturedClubs() {
+        return ((resultSet, i) -> {
+           UUID clubId = UUID.fromString(resultSet.getString("club_id"));
+           String textContent = resultSet.getString("text_content");
+           String mediaURL = resultSet.getString("media_url");
+
+           return new FeaturedClubInformation(clubId, textContent, mediaURL);
+        });
+    }
 }

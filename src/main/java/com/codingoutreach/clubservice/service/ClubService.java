@@ -1,8 +1,13 @@
 package com.codingoutreach.clubservice.service;
 
 
+
+import com.codingoutreach.clubservice.dos.FeaturedClubInformationDO;
 import com.codingoutreach.clubservice.repository.DTO.Category;
+import com.codingoutreach.clubservice.repository.DTO.FeaturedClubInformation;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.codingoutreach.clubservice.dos.ClubInformation;
 import com.codingoutreach.clubservice.dos.ClubSocialDO;
@@ -50,5 +55,15 @@ public class ClubService {
         List<Category> categories = clubRepository.getAllCategories();
 
         return categories.stream().map(Category::getCategoryName).collect(Collectors.toList());
+    }
+
+    public List<FeaturedClubInformationDO> getFeaturedClubs() {
+        List<FeaturedClubInformation> repoList = clubRepository.getFeaturedClubs();
+        List<FeaturedClubInformationDO> toReturn = new ArrayList<FeaturedClubInformationDO>();
+        for(FeaturedClubInformation info : repoList) {
+            String clubName = clubRepository.getClubByClubId(info.getClubId()).getName();
+            toReturn.add(new FeaturedClubInformationDO(info.getClubId(), clubName, info.getDescription(), info.getMediaURL()));
+        }
+        return toReturn;
     }
 }

@@ -1,6 +1,7 @@
 package com.codingoutreach.clubservice.controllers;
 
 
+import com.codingoutreach.clubservice.dos.FeaturedClubInformationDO;
 import com.codingoutreach.clubservice.repository.DTO.Club;
 import com.codingoutreach.clubservice.dos.ClubInformation;
 import com.codingoutreach.clubservice.service.ClubService;
@@ -26,6 +27,13 @@ public class ClubController {
     @Autowired
     public ClubController(ClubService clubService) {
         this.clubService = clubService;
+    }
+
+
+    @GetMapping
+    @RequestMapping(path="/featured")
+    public List<FeaturedClubInformationDO> getFeaturedClubs() {
+        return clubService.getFeaturedClubs();
     }
 
 

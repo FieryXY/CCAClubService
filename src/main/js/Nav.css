@@ -1,0 +1,111 @@
+/* Resets values to prevent render problems */
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+  }
+  
+  html, body {
+    height: 100%;
+    width: 100%;
+  }
+  
+  nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: max(100%, fit-content);
+    padding: 20px;
+    padding-bottom: 1px;
+    height: auto;
+    background-color: #3A4750;
+    margin-right: 0;
+    padding-right: 0;
+  
+    display: block;
+    box-sizing: border-box;
+  }
+
+  .nav-title {
+    font-size: 3rem
+  }
+
+  .nav-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    width: 40%;
+  }
+  
+  .link_icon {
+    width: 100px;
+    height: 100px;
+    float: left;
+    display: flex;
+    margin-left: 30px;
+  }
+  
+  .button {
+    padding: 6px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 20px;
+    padding-top: 15px;
+
+    
+    background-color: #3A4750;
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .buttonLi {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 0;
+    padding-bottom: 0px;
+    padding-bottom: 15px;
+  }
+
+
+
+  .button:hover {
+    background-color: #D72323;
+  }
+
+  .nav-links {
+    width: fit-content;
+    display: flex;
+    margin-left: auto;
+    margin-right: 0;
+    padding-right: 0;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+    list-style: none;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+
+    overflow: hidden;
+  }
+
+@media only screen and (max-width: 720px) {
+  nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+  }
+  .nav-title {
+    display: none;
+  }
+}
