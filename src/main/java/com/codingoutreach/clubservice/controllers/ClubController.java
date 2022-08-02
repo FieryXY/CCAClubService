@@ -56,7 +56,7 @@ public class ClubController {
      */
     @GetMapping
     @RequestMapping(path="/information/{clubId}")
-    public ClubInformation getClubInformationByClubId(@PathVariable("id") UUID clubId) {
+    public ClubInformation getClubInformationByClubId(@PathVariable("clubId") UUID clubId) {
         return clubService.getClubInformationByClubId(clubId);
     }
 }
