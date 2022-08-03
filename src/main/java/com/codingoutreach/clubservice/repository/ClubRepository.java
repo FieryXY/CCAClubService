@@ -54,7 +54,7 @@ public class ClubRepository {
 
     private final String ADD_TAGS = "INSERT INTO club_categories VALUES (?, ?, ?)";
 
-    private final String GET_TAG_ID = "SELECT category_id FROM category WHERE category_name=?";
+    private final String GET_TAG_ID = "SELECT * FROM category WHERE category_name=?";
 
     private final String REMOVE_TAGS = "DELETE FROM club_categories WHERE club_id=? AND category_id=?";
 
