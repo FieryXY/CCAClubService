@@ -2,7 +2,10 @@ package com.codingoutreach.clubservice.service;
 
 
 import com.codingoutreach.clubservice.repository.DTO.Category;
+import com.codingoutreach.clubservice.security.JWTUtil;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.codingoutreach.clubservice.dos.ClubInformation;
 import com.codingoutreach.clubservice.dos.ClubSocialDO;
@@ -25,8 +28,13 @@ public class ClubService {
     }
 
 
-    public List<Club> getAllClubs() {
-        return clubRepository.getAllClubs();
+    public List<ClubInformation> getAllClubs() {
+        List<Club> club = clubRepository.getAllClubs();
+        List<ClubInformation> clubs = new ArrayList<>();
+        for (Club i : club) {
+            clubs.add(getClubInformationByClubId(i.getClubID()));
+        }
+        return clubs;
     }
     
     public ClubInformation getClubInformationByClubId(UUID clubId) {
@@ -50,5 +58,37 @@ public class ClubService {
         List<Category> categories = clubRepository.getAllCategories();
 
         return categories.stream().map(Category::getCategoryName).collect(Collectors.toList());
+    }
+
+    public void editSocials(String socialName, String socialLink, UUID socialId) {
+        clubRepository.editSocials(socialName, socialLink, socialId);
+    }
+
+    public void addSocials(String socialName, String socialLink, UUID clubId) {
+        clubRepository.addSocials(socialName, socialLink, clubId);
+    }
+
+    public void editTitle(String title, UUID clubId) {
+        clubRepository.editTitle(title, clubId);
+    }
+
+    public void editDescription(String description, UUID clubId) {
+        clubRepository.editDescription(description, clubId);
+    }
+
+    public void addTags(String categoryName, UUID clubId) {
+        clubRepository.addTags(categoryName, clubId);
+    }
+
+    public void removeTags(String categoryName, UUID clubId) {
+        clubRepository.removeTags(categoryName, clubId);
+    }
+
+    public String getClubUsernameByClubId(UUID clubId) {
+        return clubRepository.findClubUserByClubId(clubId.toString()).getUsername();
+    }
+
+    public List<Club> getClubUsernames() {
+        return clubRepository.getAllClubs();
     }
 }

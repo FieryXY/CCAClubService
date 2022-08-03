@@ -1,6 +1,7 @@
 -- Club Table (List of all the Clubs) --
 CREATE TABLE IF NOT EXISTS club (
     club_id UUID NOT NULL PRIMARY KEY,
+    username VARCHAR(200) NOT NULL,
     email VARCHAR(200) NOT NULL,
     encoded_password VARCHAR(200) NOT NULL,
     name VARCHAR(200) NOT NULL,

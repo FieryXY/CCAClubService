@@ -9,6 +9,9 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class ClubCreationRequest {
     @NotBlank
+    private String username;
+
+    @NotBlank
     private String email;
 
     @NotBlank

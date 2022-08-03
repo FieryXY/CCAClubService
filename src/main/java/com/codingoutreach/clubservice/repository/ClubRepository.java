@@ -24,15 +24,15 @@ import java.util.UUID;
 
 @Repository
 public class ClubRepository {
-    //SQL Queries
+    // SQL Queries
     private final String GET_ALL_CLUBS = "SELECT * FROM club";
 
-    private final String FIND_CLUB_USER_BY_EMAIL = "SELECT club_id, email, encoded_password FROM club WHERE email=?";
+    private final String FIND_CLUB_USER_BY_USERNAME = "SELECT club_id, username, encoded_password FROM club WHERE username=?";
 
-    private final String SAVE_CLUB = "INSERT INTO club VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private final String SAVE_CLUB = "INSERT INTO club VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private final String FIND_CLUB_USER_BY_ID = "SELECT club_id, email, encoded_password FROM club WHERE club_id=?";
-    
+    private final String FIND_CLUB_USER_BY_ID = "SELECT club_id, username, encoded_password FROM club WHERE club_id=?";
+
     private final String GET_CLUB_BY_ID_SQL = "SELECT * FROM club WHERE club_id=?";
     
     private final String GET_SOCIALS_BY_CLUB_ID_SQL = "SELECT * FROM socials WHERE club_id=?";
@@ -41,7 +41,22 @@ public class ClubRepository {
     
     private final String GET_ALL_CATEGORIES = "SELECT * FROM category";
 
+    private final String EDIT_SOCIALS = "UPDATE socials " +
+                                        "SET social_name=?, social_link=? WHERE social_id=?";
 
+    private final String ADD_SOCIALS = "INSERT INTO socials VALUES (?, ?, ?, ?)";
+
+    private final String EDIT_TITLE = "UPDATE club " +
+                                      "SET name=? WHERE club_id=?";
+
+    private final String EDIT_DESCRIPTION = "UPDATE club " +
+                                            "SET description=? WHERE club_id=?";
+
+    private final String ADD_TAGS = "INSERT INTO club_categories VALUES (?, ?, ?)";
+
+    private final String GET_TAG_ID = "SELECT category_id FROM category WHERE category_name=?";
+
+    private final String REMOVE_TAGS = "DELETE FROM club_categories WHERE club_id=? AND category_id=?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -50,21 +65,82 @@ public class ClubRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //Row Mappers
+
+    public RowMapper<Category> mapCategory() {
+        return (resultSet, i) -> {
+            UUID categoryId = UUID.fromString(resultSet.getString("category_id"));
+            String categoryName = resultSet.getString("category_name");
+            return new Category(categoryId, categoryName);
+        };
+    }
+
+    public RowMapper<ClubCategory> mapClubCategory() {
+        return (resultSet, i) -> {
+            UUID clubCategoryId = UUID.fromString(resultSet.getString("id"));
+            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
+            UUID categoryId = UUID.fromString(resultSet.getString("category_id"));
+
+            return new ClubCategory(clubCategoryId, clubId, categoryId);
+        };
+    }
+
+    public RowMapper<ClubSocial> mapClubSocial() {
+        return (resultSet, i) -> {
+            UUID clubSocialId = UUID.fromString(resultSet.getString("social_id"));
+            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
+            String socialName = resultSet.getString("social_name");
+            String socialLink = resultSet.getString("social_link");
+
+            return new ClubSocial(clubSocialId, clubId, socialName, socialLink);
+        };
+    }
+
+
+
+
+    // Turns a column of data into Club object
+    // Turns a column of data into Club object
+    public RowMapper<Club> mapClub() {
+        return ((resultSet, i) -> {
+            UUID clubID = UUID.fromString(resultSet.getString("club_id"));
+            String username = resultSet.getString("username");
+            String email = resultSet.getString("email");
+            String encoded_password = resultSet.getString("encoded_password");
+            String name = resultSet.getString("name");
+            String description = resultSet.getString("description");
+            String profile_picture_url = resultSet.getString("profile_picture_url");
+            String meet_time = resultSet.getString("meet_time");
+            return new Club(clubID, username, email, encoded_password, name, description, meet_time, profile_picture_url);
+        });
+    }
+
+
+    // Login
+    public RowMapper<ClubUser> mapLogin() {
+        return ((resultSet, i) -> {
+            UUID clubID = UUID.fromString(resultSet.getString("club_id"));
+            String username = resultSet.getString("username");
+            String encoded_password = resultSet.getString("encoded_password");
+            return new ClubUser(clubID, username, encoded_password);
+        });
+    }
+
 
     public List<Club> getAllClubs() {
         return jdbcTemplate.query(GET_ALL_CLUBS, mapClub());
     }
 
-    public List<ClubUser> findByEmail(String email) {
-        return jdbcTemplate.query(FIND_CLUB_USER_BY_EMAIL, new Object[] {email}, mapLogin());
+    public List<ClubUser> findByUsername(String username) {
+        return jdbcTemplate.query(FIND_CLUB_USER_BY_USERNAME, new Object[] {username}, mapLogin());
     }
 
-    public List<ClubUser> findClubById(UUID clubId) {
-        return jdbcTemplate.query(FIND_CLUB_USER_BY_ID, new Object[]{clubId}, mapLogin());
+    public ClubUser findClubUserByClubId(String clubId) {
+        return jdbcTemplate.queryForObject(FIND_CLUB_USER_BY_ID, new Object[]{clubId}, mapLogin());
     }
 
     public int createNewClub(Club club) {
-        return jdbcTemplate.update(SAVE_CLUB, club.getClubID(), club.getEmail(), club.getEncodedPassword(),
+        return jdbcTemplate.update(SAVE_CLUB, club.getClubID(), club.getUsername(), club.getEmail(), club.getEncodedPassword(),
                 club.getName(), club.getDescription(), club.getMeetTime(),
                 club.getProfilePictureUrl());
     }
@@ -84,66 +160,38 @@ public class ClubRepository {
     public List<Category> getAllCategories() {
         return jdbcTemplate.query(GET_ALL_CATEGORIES, mapCategory());
     }
-    
-    //Row Mappers
 
-    public RowMapper<Category> mapCategory() {
-        return (resultSet, i) -> {
-          UUID categoryId = UUID.fromString(resultSet.getString("category_id"));
-          String categoryName = resultSet.getString("category_name");
-          return new Category(categoryId, categoryName);
-        };
+    public void editSocials(String socialName, String socialLink, UUID socialId) {
+        jdbcTemplate.update(EDIT_SOCIALS, socialName, socialLink, socialId);
     }
 
-    public RowMapper<ClubCategory> mapClubCategory() {
-        return (resultSet, i) -> {
-            UUID clubCategoryId = UUID.fromString(resultSet.getString("id"));
-            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
-            UUID categoryId = UUID.fromString(resultSet.getString("category_id"));
-
-            return new ClubCategory(clubCategoryId, clubId, categoryId);
-        };
+    public void addSocials(String socialName, String socialLink, UUID clubId) {
+        UUID socialId = UUID.randomUUID();
+        jdbcTemplate.update(ADD_SOCIALS, socialId, clubId, socialName, socialLink);
     }
 
-    public RowMapper<ClubSocial> mapClubSocial() {
-        return (resultSet, i) -> {
-          UUID clubSocialId = UUID.fromString(resultSet.getString("social_id"));
-          UUID clubId = UUID.fromString(resultSet.getString("club_id"));
-          String socialName = resultSet.getString("social_name");
-          String socialLink = resultSet.getString("social_link");
-
-          return new ClubSocial(clubSocialId, clubId, socialName, socialLink);
-        };
+    public void editTitle(String title, UUID clubId) {
+        jdbcTemplate.update(EDIT_TITLE, title, clubId);
     }
 
-
-
-
-
-    // Turns a column of data into Club object
-    // Turns a column of data into Club object
-    public RowMapper<Club> mapClub() {
-        return ((resultSet, i) -> {
-            UUID clubID = UUID.fromString(resultSet.getString("club_id"));
-            String email = resultSet.getString("email");
-            String encoded_password = resultSet.getString("encoded_password");
-            String name = resultSet.getString("name");
-            String description = resultSet.getString("description");
-            String profile_picture_url = resultSet.getString("profile_picture_url");
-            String meet_time = resultSet.getString("meet_time");
-            return new Club(clubID, email, encoded_password, name, description, meet_time, profile_picture_url);
-        });
+    public void editDescription(String description, UUID clubId) {
+        jdbcTemplate.update(EDIT_DESCRIPTION, description, clubId);
     }
 
-
-    // Login
-    public RowMapper<ClubUser> mapLogin() {
-        return ((resultSet, i) -> {
-           UUID clubID = UUID.fromString(resultSet.getString("club_id"));
-           String email = resultSet.getString("email");
-           String encoded_password = resultSet.getString("encoded_password");
-           return new ClubUser(clubID, email, encoded_password);
-        });
+    public UUID getTagId(String categoryName) {
+        List<Category> temp = jdbcTemplate.query(GET_TAG_ID, new Object[] {categoryName}, mapCategory());
+        return temp.get(0).getCategoryId();
     }
 
+    public void addTags(String categoryName, UUID clubId) {
+        UUID id = UUID.randomUUID();
+        UUID categoryId = getTagId(categoryName);
+        jdbcTemplate.update(ADD_TAGS, id, clubId, categoryId);
+    }
+
+    public void removeTags(String categoryName, UUID clubId) {
+        UUID categoryId = getTagId(categoryName);
+        jdbcTemplate.update(REMOVE_TAGS, clubId, categoryId);
+    }
 }
+
