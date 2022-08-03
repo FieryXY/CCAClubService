@@ -40,19 +40,21 @@ public class ClubController {
         return username.equals(jwtUtil.validateTokenAndRetrieveSubject(token.substring(7)));
     }
 //     Get All Clubs
+    @CrossOrigin
     @GetMapping
     @RequestMapping(path = "/list")
     public List<ClubInformation> getClubs() {
         return clubService.getAllClubs();
     }
 
+    @CrossOrigin
     @GetMapping
     @RequestMapping(path="/tags/list")
     public List<String> getAllTags() {
         return clubService.getAllTags();
     }
 
-
+    @CrossOrigin
     @PostMapping
     @RequestMapping(path="/edit/socials/change/{clubId}")
     public void editSocials(@RequestBody SocialCredentials body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
@@ -64,6 +66,7 @@ public class ClubController {
         clubService.editSocials(body.getSocialName(), body.getSocialLink(), body.getSocialId());
     }
 
+    @CrossOrigin
     @PostMapping
     @RequestMapping(path="/edit/title/{clubId}")
     public void editTitle(@RequestBody Title body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
@@ -75,6 +78,7 @@ public class ClubController {
         clubService.editTitle(body.getName(), clubId);
     }
 
+    @CrossOrigin
     @PostMapping
     @RequestMapping(path="/edit/description/{clubId}")
     public void editDescription(@RequestBody Description body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
@@ -86,6 +90,8 @@ public class ClubController {
         clubService.editDescription(body.getDescription(), clubId);
     }
 
+
+    @CrossOrigin
     @PostMapping
     @RequestMapping(path="/edit/socials/add/{clubId}")
     public void addSocials(@RequestBody SocialCredentials body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
@@ -97,6 +103,7 @@ public class ClubController {
         clubService.addSocials(body.getSocialName(), body.getSocialLink(), clubId);
     }
 
+    @CrossOrigin
     @PostMapping
     @RequestMapping(path="/edit/tags/add/{clubId}")
     public void addTags(@RequestBody Tags body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
@@ -108,6 +115,7 @@ public class ClubController {
         clubService.addTags(body.getCategoryName(), clubId);
     }
 
+    @CrossOrigin
     @PostMapping
     @RequestMapping(path="/edit/tags/remove/{clubId}")
     public void removeTags(@RequestBody Tags body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
@@ -119,6 +127,7 @@ public class ClubController {
         clubService.removeTags(body.getCategoryName(), clubId);
     }
 
+    @CrossOrigin
     @GetMapping
     @RequestMapping(path="/list/username")
     public HashMap<String, Integer> getClubUsernames() {
@@ -135,6 +144,8 @@ public class ClubController {
      * @param clubId ID of Club
      * @return All information needed to load Club Profile page for club identified with {@code clubId}
      */
+
+    @CrossOrigin
     @GetMapping
     @RequestMapping(path="/information/{clubId}")
     public ClubInformation getClubInformationByClubId(@PathVariable("clubId") UUID clubId) {
