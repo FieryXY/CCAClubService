@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Represents one social of a club
@@ -12,6 +14,10 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class ClubSocialDO {
 
+    @NotNull
+    private UUID socialId;
+
+    @NotBlank
     private String socialName;
 
     @NotBlank

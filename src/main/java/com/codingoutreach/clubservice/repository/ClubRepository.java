@@ -58,6 +58,10 @@ public class ClubRepository {
 
     private final String REMOVE_TAGS = "DELETE FROM club_categories WHERE club_id=? AND category_id=?";
 
+    private final String REMOVE_SOCIAL = "DELETE FROM socials WHERE club_id=? AND social_id=?";
+
+    private final String SOCIAL_EXISTS = "SELECT * FROM socials WHERE club_id=? AND social_name=?";
+
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -192,6 +196,19 @@ public class ClubRepository {
     public void removeTags(String categoryName, UUID clubId) {
         UUID categoryId = getTagId(categoryName);
         jdbcTemplate.update(REMOVE_TAGS, clubId, categoryId);
+    }
+
+    public void removeSocial(UUID socialId) {
+        jdbcTemplate.update(REMOVE_SOCIAL, socialId);
+    }
+
+    //Check if Social Exists for Club ID by Social Name
+    public UUID getSocialIdForSocialName(String socialName, UUID clubId) {
+        List<ClubSocial> temp = jdbcTemplate.query(SOCIAL_EXISTS, new Object[] {clubId, socialName}, mapClubSocial());
+        if (temp.size() == 0) {
+            return null;
+        }
+        return temp.get(0).getClubSocialId();
     }
 }
 

@@ -1,6 +1,7 @@
 package com.codingoutreach.clubservice.service;
 
 
+import com.codingoutreach.clubservice.models.SocialCredentials;
 import com.codingoutreach.clubservice.repository.DTO.Category;
 import com.codingoutreach.clubservice.security.JWTUtil;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class ClubService {
         List<ClubSocial> clubSocials = clubRepository.getClubSocialsByClubId(clubId);
         List<String> categories = clubRepository.getClubCategoriesByClubId(clubId);
 
-        List<ClubSocialDO> clubSocialDOs = clubSocials.stream().map(clubSocial -> new ClubSocialDO(clubSocial.getSocialName(), clubSocial.getSocialLink())).collect(Collectors.toList());
+        List<ClubSocialDO> clubSocialDOs = clubSocials.stream().map(clubSocial -> new ClubSocialDO(clubSocial.getClubSocialId(), clubSocial.getSocialName(), clubSocial.getSocialLink())).collect(Collectors.toList());
 
         return new ClubInformation(
                 club.getClubID(),
@@ -65,7 +66,14 @@ public class ClubService {
     }
 
     public void addSocials(String socialName, String socialLink, UUID clubId) {
-        clubRepository.addSocials(socialName, socialLink, clubId);
+        UUID socialId = clubRepository.getSocialIdForSocialName(socialName, clubId);
+
+        if(socialId != null) {
+            clubRepository.editSocials(socialName, socialLink, socialId);
+        }
+        else {
+            clubRepository.addSocials(socialName, socialLink, clubId);
+        }
     }
 
     public void editTitle(String title, UUID clubId) {
@@ -90,5 +98,9 @@ public class ClubService {
 
     public List<Club> getClubUsernames() {
         return clubRepository.getAllClubs();
+    }
+
+    public void removeSocial(SocialCredentials social) {
+        clubRepository.removeSocial(social.getSocialId());
     }
 }

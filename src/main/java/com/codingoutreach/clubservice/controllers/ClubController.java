@@ -1,5 +1,6 @@
 package com.codingoutreach.clubservice.controllers;
 
+import com.codingoutreach.clubservice.controllers.DO.SocialCreationRequest;
 import com.codingoutreach.clubservice.models.Description;
 import com.codingoutreach.clubservice.models.SocialCredentials;
 import com.codingoutreach.clubservice.models.Tags;
@@ -68,6 +69,20 @@ public class ClubController {
 
     @CrossOrigin
     @PostMapping
+    @RequestMapping(path="/edit/socials/remove/{clubId}")
+    public void removeSocials(@RequestBody SocialCredentials body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if (!isValidUser(clubId, token)) {
+            throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED, "Unauthorized to edit this club's page"
+            );
+        }
+        clubService.removeSocial(body);
+    }
+
+
+
+    @CrossOrigin
+    @PostMapping
     @RequestMapping(path="/edit/title/{clubId}")
     public void editTitle(@RequestBody Title body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (!isValidUser(clubId, token)) {
@@ -94,7 +109,7 @@ public class ClubController {
     @CrossOrigin
     @PostMapping
     @RequestMapping(path="/edit/socials/add/{clubId}")
-    public void addSocials(@RequestBody SocialCredentials body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public void addSocials(@RequestBody SocialCreationRequest body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (!isValidUser(clubId, token)) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED, "Unauthorized to edit this club's page"
