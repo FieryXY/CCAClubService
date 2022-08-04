@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS post (
     post_id UUID NOT NULL PRIMARY KEY,
     sender UUID NOT NULL,
     title VARCHAR(200) NOT NULL,
+    text_content VARCHAR(500),
+    media_url VARCHAR(500),
     FOREIGN KEY (sender) REFERENCES club(club_id)
 );
 

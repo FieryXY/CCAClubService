@@ -1,5 +1,6 @@
 package com.codingoutreach.clubservice.service;
 
+import com.codingoutreach.clubservice.controllers.DO.PostCreationRequest;
 import com.codingoutreach.clubservice.repository.DTO.Post;
 import com.codingoutreach.clubservice.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,4 +23,7 @@ public class PostService {
         return postRepository.getAllPosts(clubId);
     }
 
+    public void createPost(PostCreationRequest request, UUID clubId) {
+        postRepository.insertPost(request);
+    }
 }

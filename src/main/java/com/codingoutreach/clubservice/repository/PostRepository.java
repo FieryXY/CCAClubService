@@ -1,5 +1,6 @@
 package com.codingoutreach.clubservice.repository;
 
+import com.codingoutreach.clubservice.controllers.DO.PostCreationRequest;
 import com.codingoutreach.clubservice.repository.DTO.Post;
 import com.codingoutreach.clubservice.repository.DTO.PostTab;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class PostRepository {
 
     private final String GET_ALL_POST_TABS = "SELECT * FROM post_tab WHERE post_id=?";
 
+    private final String INSERT_POST = "INSERT INTO post VALUES (?,?,?,?,?)";
+
 
 
     private final JdbcTemplate jdbcTemplate;
@@ -28,20 +31,23 @@ public class PostRepository {
 
     public List<Post> getAllPosts(UUID clubId) {
         List<Post> temp = jdbcTemplate.query(GET_ALL_POSTS, new Object[] {clubId}, mapPost());
-        for (Post i : temp) {
-            UUID postId = i.getPost_id();
-            List<PostTab> postTabs = jdbcTemplate.query(GET_ALL_POST_TABS, new Object[] {postId}, mapPostTabs());
-            i.setPostTab(postTabs);
-        }
         return temp;
     }
+
+    public int insertPost(PostCreationRequest postCreationRequest) {
+        return jdbcTemplate.update(INSERT_POST, UUID.randomUUID(), postCreationRequest.getClub_id(), postCreationRequest.getTitle(), postCreationRequest.getText_content(), postCreationRequest.getMedia_url());
+    }
+
+
 
     public RowMapper<Post> mapPost() {
         return ((resultSet, i) -> {
             UUID post_id = UUID.fromString(resultSet.getString("post_id"));
             UUID sender = UUID.fromString(resultSet.getString("sender"));
             String title = resultSet.getString("title");
-            return new Post(post_id, sender, title, null);
+            String textContent = resultSet.getString("text_content");
+            String mediaURL = resultSet.getString("media_url");
+            return new Post(post_id, sender, title, textContent, mediaURL);
         });
     }
     public RowMapper<PostTab> mapPostTabs() {

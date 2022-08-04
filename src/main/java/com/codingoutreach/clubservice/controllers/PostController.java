@@ -1,5 +1,6 @@
 package com.codingoutreach.clubservice.controllers;
 
+import com.codingoutreach.clubservice.controllers.DO.PostCreationRequest;
 import com.codingoutreach.clubservice.repository.DTO.Club;
 import com.codingoutreach.clubservice.repository.DTO.Post;
 import com.codingoutreach.clubservice.service.PostService;
@@ -29,8 +30,8 @@ public class PostController {
     }
     @PostMapping
     @RequestMapping(path = "/create/{clubId}")
-    public List<Post> createPosts() {
-        return null;
+    public void createPost(@RequestBody PostCreationRequest request, @PathVariable("clubId") UUID clubId) {
+        postService.createPost(request, clubId);
     }
     //Controllers Needed: Post creation, Post editing
 }
