@@ -4,6 +4,7 @@ package com.codingoutreach.clubservice.service;
 import com.codingoutreach.clubservice.models.SocialCredentials;
 import com.codingoutreach.clubservice.repository.DTO.Category;
 import com.codingoutreach.clubservice.security.JWTUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import com.codingoutreach.clubservice.repository.ClubRepository;
 import com.codingoutreach.clubservice.repository.DTO.Club;
 import com.codingoutreach.clubservice.repository.DTO.ClubSocial;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -66,6 +68,13 @@ public class ClubService {
     }
 
     public void addSocials(String socialName, String socialLink, UUID clubId) {
+
+        if (socialName.trim().length() == 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Social name cannot be empty"
+            );
+        }
+
         UUID socialId = clubRepository.getSocialIdForSocialName(socialName, clubId);
 
         if(socialId != null) {
