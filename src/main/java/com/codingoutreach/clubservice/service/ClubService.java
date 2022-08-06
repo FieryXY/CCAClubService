@@ -56,13 +56,13 @@ public class ClubService {
             byte[] imageBytes = null;
             try {
                 imageBytes = Files.readAllBytes(java.nio.file.Paths.get(path));
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+                String imageType = "image/" + club.getProfilePictureUrl().split("\\.")[1];
+                base64Image = "data:" + imageType + ";base64," + base64Image;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            base64Image = Base64.getEncoder().encodeToString(imageBytes);
-
-            String imageType = "image/" + club.getProfilePictureUrl().split("\\.")[1];
-            base64Image = "data:" + imageType + ";base64," + base64Image;
         }
 
         System.out.println(base64Image);
