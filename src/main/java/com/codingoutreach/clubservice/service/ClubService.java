@@ -48,7 +48,7 @@ public class ClubService {
 
         List<ClubSocialDO> clubSocialDOs = clubSocials.stream().map(clubSocial -> new ClubSocialDO(clubSocial.getClubSocialId(), clubSocial.getSocialName(), clubSocial.getSocialLink())).collect(Collectors.toList());
 
-        String base64Image = "templink";
+        String base64Image = null;
 
         if(club.getProfilePictureUrl() != null) {
             String path = "./src/main/resources/static/" + club.getProfilePictureUrl();
