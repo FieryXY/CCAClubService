@@ -1,6 +1,7 @@
 package com.codingoutreach.clubservice.service;
 
 
+import com.codingoutreach.clubservice.controllers.DO.SocialCreationRequest;
 import com.codingoutreach.clubservice.models.SocialCredentials;
 import com.codingoutreach.clubservice.repository.DTO.Category;
 import com.codingoutreach.clubservice.security.JWTUtil;
@@ -65,8 +66,6 @@ public class ClubService {
             }
         }
 
-        System.out.println(base64Image);
-
         return new ClubInformation(
                 club.getClubID(),
                 club.getName(),
@@ -129,7 +128,7 @@ public class ClubService {
         return clubRepository.getAllClubs();
     }
 
-    public void removeSocial(SocialCredentials social) {
-        clubRepository.removeSocial(social.getSocialId());
+    public void removeSocial(UUID clubId, SocialCreationRequest social) {
+        clubRepository.removeSocial(clubId, social.getSocialName());
     }
 }

@@ -46,8 +46,6 @@ public class ImageController {
     @RequestMapping("/upload/pfp/{clubId}")
     public void uploadProfilePicture(@PathVariable("clubId") UUID clubId, @RequestParam("pfp") MultipartFile file, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws IOException {
 
-        System.out.println("Beginning Image Upload");
-
         if(!isValidUser(clubId, token)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
