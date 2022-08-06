@@ -1,0 +1,321 @@
+/* Basic css stuff */
+/* html {
+    height: 100%;
+    
+} */
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    min-height: 100%;
+    margin: 0;
+    background: #303841;
+}
+
+
+
+
+
+.clubListText {
+    width: 100%;
+}
+
+
+.clubSearchPageH1 {
+    color: #EEEEEE;
+}
+
+.clubSearchPageH2 {
+    color: #6f1515;
+}
+
+.clubSearchPageH3 {
+    color: #EEEEEE;
+}
+
+.clubSearchPageP {
+    margin-top: 0px;
+    color: #EEEEEE;
+}
+
+
+.clubSearchPageA {
+    color: black;
+}
+
+.container {
+    width: 1150px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.logo {
+    margin-right: 20px;
+}
+
+
+.divPostsDisplay {
+    display: block;
+}
+
+.clubList {
+    display: flex;
+    flex-direction: row;
+}
+
+hr {
+    background-color: #3A4750;
+    color: #3A4750;
+    height: 2px;
+    border: none;
+}
+
+input[type=text] {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 15px 10%;
+    margin-top: 1%;
+    margin-bottom: 50px;
+    box-sizing: border-box;
+    border: none;
+    background-color: #EEEEEE;
+    color: #303841;
+    border-radius: 20px;
+}
+
+input[type=button] {
+    width: 15%;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    background-color: red;
+    color: white;
+    border: none;
+
+
+}
+
+input[type=button]:hover {
+    background-color: white;
+    color: black;
+
+
+}
+
+
+/* Navigation bar stuff */
+
+
+
+/* Column stuff */
+
+
+.tags {
+    float: right;
+    width: 32.5%;
+    height: 100%;
+    background-color: #3A4750;
+    padding: 5px;
+    border-radius: 20px;
+    overflow-wrap: anywhere;
+    text-align:left;
+}
+
+.tags h1 {
+    text-align: center;
+}
+
+.tag {
+   
+    text-decoration: none;
+    margin-left: 5%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background: #D72323;
+    border-radius: 10px;
+    line-height: 40px;
+    white-space: nowrap;
+    color: #EEEEEE;
+}
+
+.displayTag {
+    text-decoration: none;
+    margin-left: 1%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background: #3A4750;
+    border-radius: 10px;
+    line-height: 40px;
+    white-space: nowrap;
+    color: #EEEEEE;
+}
+
+.tagWithSmallerMargin {
+
+    text-decoration: none;
+    margin: 0.4%;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 7px;
+    padding-left: 7px;
+    background-color: #e6c4c4;
+    border-radius: 8px;
+    line-height: 40px;
+    white-space: nowrap;
+    color: black;
+
+}
+
+.tag:hover {
+    color: white;
+    background-color: #303841;
+}
+
+.tagSelected {
+    color: white;
+    background-color: #303841;
+}
+
+.tagWithSmallerMargin:hover {
+    color: white;
+    background-color: #ae3131;
+}
+
+.writeups {
+    float: left;
+    width: 62.5%;
+    height: 100%;
+}
+
+.writeupTitle {
+    color: #EEEEEE;
+    font-size: 25px;
+    text-decoration: none;
+}
+
+.writeupTitle:hover {
+    text-decoration: underline;
+}
+
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.horizontalContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Home Page Stuff */
+
+
+/* Footer Stuff */
+
+
+.clubImage {
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    border: solid;
+    border-color: #3A4750;
+}
+
+footer {
+    background-color: #6f1515;
+    /*background-image: linear-gradient(to right, #cdcdc036 10%, #dccdad, #cdcdc036 70%);*/
+    width: 100%;
+    text-align: center;
+    z-index: 5;
+    margin-top: auto;
+    padding: 8px 0;
+    font-family: 'Oswald';
+    position: sticky;
+    top: 100%;
+    height: 60px;
+}
+
+.copyright {
+    text-decoration: none;
+    display: block;
+    margin-top: 20px;
+}
+
+.copyright:hover {
+    text-decoration: underline;
+}
+
+
+@media only screen and (max-width: 1200px) {
+    .container {
+        width: 900px;
+    }
+
+    .homebtn {
+        width: 220px;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        width: 700px;
+    }
+
+    .column {
+        width: 100%;
+        margin: 0;
+        margin-top: 30px;
+    }
+
+    .homeh1 {
+        font-size: 70px;
+    }
+
+    .homebtn {
+        width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .homeh1 {
+        font-size: 10vw;
+    }
+
+
+    .homebtn {
+        width: 25vw;
+        font-size: 4vw;
+        height: 15vw;
+    }
+
+    .tags {
+        width: 100%;
+    }
+
+    .writeups {
+        width: 100%;
+    }
+
+    .column {
+        width: 100%;
+        margin: 0;
+        margin-top: 30px;
+    }
+}
+
+
+

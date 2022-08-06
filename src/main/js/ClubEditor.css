@@ -1,0 +1,157 @@
+.twoColumnContainer {
+    width: 100%;
+    max-width: 90vw;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    align-items: stretch;
+    margin: 3rem;
+}
+
+.twoColumnElement {
+    flex: 1 1 0px;
+    height: 100%;
+    overflow: hidden;
+    overflow-wrap: break-word;
+}
+
+.clubProfileTitle {
+    color: white;
+    padding-bottom: 1rem;
+}
+
+.tagModalBox{
+    
+    width: 100%;
+    height: 100%;
+    background-color: #3A4750;
+    padding: 5px;
+    border-radius: 25px;
+    overflow-wrap: anywhere;
+    text-align:left;
+
+}   
+
+.tagModalBox h1 {
+    text-align: center;
+}
+
+.clubDescriptionEditor {
+    color: white;
+    display: block;
+    width: 100%;
+    resize: vertical;
+
+
+    background: #3A4750;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    padding: 10px;
+}
+
+.displayTagRed {
+    text-decoration: none;
+    margin-right: 1rem;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background: #D72323;
+    border-radius: 10px;
+    line-height: 40px;
+    white-space: nowrap;
+    color: #EEEEEE;
+}
+.displayTagRed:hover{
+    color:#EEEEEE;
+}
+
+.descChangeButton{
+    text-decoration: none;
+    margin-left: 5%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background: #D72323;
+    border-radius: 10px;
+    line-height: 40px;
+    white-space: nowrap;
+    color: #EEEEEE; 
+}
+.clubProfileTagDiv {
+    margin-top: 3rem;
+}
+
+.clubProfilePicture {
+    background-color: #062D38;
+    width: 50%;
+  
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.verticalCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.linkShelf {
+    margin-top: 2rem;
+    width: 70%;
+    margin-left: 20%;
+    margin-right: 20%;
+    height: 40px;
+    background-color: #3A4750;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 1px;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 5px;
+}
+
+.social {
+    height: 85%;
+    transition: height 0.5s;
+
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: red;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.social:hover {
+    height: 100%;
+}
+
+.socialSideButton {
+    height: 70%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+@media only screen and (max-width: 900px) {
+    .twoColumnContainer {
+        flex-direction: column;
+    }
+    .clubProfilePicture {
+        width: 200px;
+    }
+    /* .linkShelf {
+
+    } */
+}

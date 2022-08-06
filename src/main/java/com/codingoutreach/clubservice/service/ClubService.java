@@ -7,8 +7,10 @@ import com.codingoutreach.clubservice.security.JWTUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.*;
+
 import com.codingoutreach.clubservice.dos.ClubInformation;
 import com.codingoutreach.clubservice.dos.ClubSocialDO;
 import com.codingoutreach.clubservice.repository.ClubRepository;
@@ -18,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,11 +48,30 @@ public class ClubService {
 
         List<ClubSocialDO> clubSocialDOs = clubSocials.stream().map(clubSocial -> new ClubSocialDO(clubSocial.getClubSocialId(), clubSocial.getSocialName(), clubSocial.getSocialLink())).collect(Collectors.toList());
 
+        String base64Image = "templink";
+
+        if(club.getProfilePictureUrl() != null) {
+            String path = "./src/main/resources/static/" + club.getProfilePictureUrl();
+            //Read file from path as base64
+            byte[] imageBytes = null;
+            try {
+                imageBytes = Files.readAllBytes(java.nio.file.Paths.get(path));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+            String imageType = "image/" + club.getProfilePictureUrl().split("\\.")[1];
+            base64Image = "data:" + imageType + ";base64," + base64Image;
+        }
+
+        System.out.println(base64Image);
+
         return new ClubInformation(
                 club.getClubID(),
                 club.getName(),
                 club.getDescription(),
-                club.getProfilePictureUrl(),
+                base64Image,
                 clubSocialDOs,
                 categories
         );
