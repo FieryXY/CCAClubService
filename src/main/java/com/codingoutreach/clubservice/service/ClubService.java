@@ -62,7 +62,7 @@ public class ClubService {
                 String imageType = "image/" + club.getProfilePictureUrl().split("\\.")[1];
                 base64Image = "data:" + imageType + ";base64," + base64Image;
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Profile Picture Image Not Found");
             }
         }
 
