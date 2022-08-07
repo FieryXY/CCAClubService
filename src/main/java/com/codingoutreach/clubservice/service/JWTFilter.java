@@ -17,7 +17,7 @@ import java.io.IOException;
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
-    @Autowired private ClubUserService  userDetailsService;
+    @Autowired private ClubUserService userDetailsService;
     @Autowired private JWTUtil jwtUtil;
 
     @Override
@@ -27,18 +27,18 @@ public class JWTFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         if(authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")){
             String jwt = authHeader.substring(7);
-            if(jwt == null || jwt.isBlank()){
+            if(jwt == null || jwt.isBlank()) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token in Bearer Header");
-            }else {
+            } else {
                 try{
-                    String email = jwtUtil.validateTokenAndRetrieveSubject(jwt);
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                    String username = jwtUtil.validateTokenAndRetrieveSubject(jwt);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(email, userDetails.getPassword(), userDetails.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(), userDetails.getAuthorities());
                     if(SecurityContextHolder.getContext().getAuthentication() == null){
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
-                }catch(JWTVerificationException exc){
+                } catch(JWTVerificationException exc) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token");
                 }
             }

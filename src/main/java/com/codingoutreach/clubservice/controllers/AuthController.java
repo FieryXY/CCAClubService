@@ -33,7 +33,7 @@ public class AuthController {
     @PostMapping("/register")
     public Map<String, Object> registerHandler(@RequestBody ClubCreationRequest user){
         Club userClub = clubUserService.signUpUser(user);
-        String token = jwtUtil.generateToken(userClub.getEmail());
+        String token = jwtUtil.generateToken(userClub.getUsername());
         return Collections.singletonMap("jwt-token", token);
     }
 
@@ -42,10 +42,10 @@ public class AuthController {
     public Map<String, Object> loginHandler(@RequestBody LoginCredentials body){
         try {
             UsernamePasswordAuthenticationToken authInputToken =
-                    new UsernamePasswordAuthenticationToken(body.getEmail(), body.getPassword());
+                    new UsernamePasswordAuthenticationToken(body.getUsername(), body.getPassword());
 
 
-            List<ClubUser> clubUserList = clubRepository.findByEmail(body.getEmail());
+            List<ClubUser> clubUserList = clubRepository.findByUsername(body.getUsername());
             if (clubUserList.size() == 0) {
                 // Returns email failure
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Email");
@@ -53,9 +53,11 @@ public class AuthController {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Too many emails");
             }
             authManager.authenticate(authInputToken);
-            String token = jwtUtil.generateToken(clubUserList.get(0).getEmail());
+            String token = jwtUtil.generateToken(clubUserList.get(0).getUsername());
 
-            return Collections.singletonMap("jwt-token", token);
+            Map<String, Object> map = new java.util.HashMap<>(Collections.singletonMap("jwtToken", "Bearer " + token));
+            map.put("clubId", clubUserList.get(0).getClubid().toString());
+            return map;
         } catch (AuthenticationException authExc){
             // Returns password failure
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Password");

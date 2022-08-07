@@ -21,6 +21,9 @@ public class Club {
     private final UUID clubID;
 
     @NotBlank
+    private String username;
+
+    @NotBlank
     private String email;
 
     @NotBlank
@@ -37,5 +40,6 @@ public class Club {
 
     @NotBlank
     private String profilePictureUrl;
+
 
 }
