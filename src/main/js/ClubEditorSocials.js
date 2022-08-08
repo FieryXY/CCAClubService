@@ -43,8 +43,8 @@ const ClubEditorSocials = (props) => {
                                 setSocialModalIsOpen(false);
                                 setCurrentSocial(null);           
                         }}>
-                        <SocialModal setSocialModalIsOpen={setSocialModalIsOpen} socialMap = {{"Club Website" : clubwebsite, "Instagram" : instagram, "Email" : email, "Google Classroom": classroom, "Other Website's" : other}} setRefresh = {props.setRefresh} 
-                                setCurrentSocial = {setCurrentSocial} currentSocial = {currentSocial} setClubSocials = {props.setClubSocials}/>
+                        <SocialModal setSocialModalIsOpen={setSocialModalIsOpen} socialMap = {{"Club Website" : clubwebsite, "Instagram" : instagram, "Email" : email.substring(7), "Classroom": classroom, "Other" : other}} setRefresh = {props.setRefresh}
+                                                        setCurrentSocial = {setCurrentSocial} currentSocial = {currentSocial} setClubSocials = {props.setClubSocials}/>
                 </Modal>
                 <div className="linkShelf">
                         <a className= {(clubwebsite === null) ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Club Website")}}><IdcardOutlined style= {{color: '#FFFFFF'}} href = {clubwebsite}/></a>
