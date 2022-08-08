@@ -150,10 +150,10 @@
   .form input.has-error {
     border: 1px solid #d76666;
   }
-  .form input[type=password] {
+  /* .password { */
     /* space left for the HIDE button */
-    padding-right: 65px;
-  }
+    /* padding-right: 65px; */
+  /* } */
   .form .submit {
     text-align: center;
     padding: 0;

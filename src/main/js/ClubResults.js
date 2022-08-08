@@ -7,17 +7,19 @@ function ClubResults(props) {
     
 
     let listOfHtmlElements = props.clubResultList.map(clubJSON => 
-        <ClubResult clubJSON = {clubJSON}/>
+        <ClubResult key={clubJSON["clubId"]} clubJSON = {clubJSON}/>
     ) 
     
     return (
      
-        <div  className="writeups">
+        <div className="writeups">
                 <h1 className="clubSearchPageH1">Results</h1>
             <div className="divPostsDisplay">
                 <hr/>
-                <div className="clubList"></div>
+                <div className="clubList">
                     {listOfHtmlElements}
+                </div>
+                    
                 </div>
         </div>
       

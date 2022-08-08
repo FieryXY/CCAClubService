@@ -101,6 +101,10 @@
     align-items: center;
 }
 
+.socialnull:hover {
+    height: 100%;
+}
+
 .social:hover {
     height: 100%;
 }

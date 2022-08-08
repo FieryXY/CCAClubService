@@ -13,7 +13,16 @@ const ClubProfile = () => {
     let {clubId} = useParams();     
     
     useEffect(() => {                                                       
-        ClubService.doClubInfo(clubId).then(response => response.json()).then(json => {
+        ClubService.doClubInfo(clubId).then(response => {
+
+            console.log(response.status);
+
+            if(response.status != 200) {
+                throw "Backend is Not Responding!"
+            }
+
+            return response.json();
+        }).then(json => {
             setClubInfo(json);
         }).catch(err => {console.log("backend is not responding")})
     }, [clubId]);

@@ -11,21 +11,26 @@ import {
         LinkOutlined
         } from "@ant-design/icons";
 const ClubEditorSocials = (props) => {
-        let socials = props.clubSocials;
-        const [clubwebsite, setClubWebsite] = useState("");
-        const [instagram, setInstagram] = useState("");
-        const [email, setEmail] = useState("");
-        const [classroom, setClassroom] = useState("");
-        const [other, setOther] = useState("");
-        const [currentSocial, setCurrentSocial] = useState("");
+        const [clubwebsite, setClubWebsite] = useState(null);
+        const [instagram, setInstagram] = useState(null);
+        const [email, setEmail] = useState(null);
+        const [classroom, setClassroom] = useState(null);
+        const [other, setOther] = useState(null);
+        const [currentSocial, setCurrentSocial] = useState(null);
         useEffect(() => {
-                for(const social of socials) {
+                setClubWebsite(null);
+                setInstagram(null);
+                setEmail(null);
+                setClassroom(null);
+                setOther(null);
+
+                for(const social of props.clubSocials) {
                         if(social["socialName"] === "Club Website") setClubWebsite(social["socialLink"]);
                         if(social["socialName"] === "Instagram") setInstagram(social["socialLink"]);
                         if(social["socialName"] === "Email") setEmail("mailto:" + social["socialLink"]);
                         if(social["socialName"] === "Classroom") setClassroom(social["socialLink"]);
                         if(social["socialName"] === "Other") setOther(social["socialLink"]);
-                }}, [])
+        }}, [props.clubSocials])
         const [socialModalIsOpen, setSocialModalIsOpen] = useState(false);
         const onSocialAdd = (social) => {
                 setCurrentSocial(social);
@@ -34,13 +39,19 @@ const ClubEditorSocials = (props) => {
         
         return(
         <>      
-                <Modal style = {{content: {"background" : "#3A4750", "overflow" : "scroll", "borderRadius" : "25px"}}} isOpen = {socialModalIsOpen} onRequestClose = {() => {setSocialModalIsOpen(false)}}><SocialModal socialMap = {{"Club Website" : clubwebsite, "Instagram" : instagram, "Email" : email, "Google Classroom": classroom, "Other Website's" : other}} setRefresh = {props.setRefresh} currentSocial = {currentSocial} setClubSocials = {props.setClubSocials}/></Modal>
+                <Modal style = {{content: {"background" : "#3A4750", "overflow" : "scroll", "borderRadius" : "25px"}}} isOpen = {socialModalIsOpen} onRequestClose = {() => {
+                                setSocialModalIsOpen(false);
+                                setCurrentSocial(null);           
+                        }}>
+                        <SocialModal setSocialModalIsOpen={setSocialModalIsOpen} socialMap = {{"Club Website" : clubwebsite, "Instagram" : instagram, "Email" : email, "Google Classroom": classroom, "Other Website's" : other}} setRefresh = {props.setRefresh} 
+                                setCurrentSocial = {setCurrentSocial} currentSocial = {currentSocial} setClubSocials = {props.setClubSocials}/>
+                </Modal>
                 <div className="linkShelf">
-                        <a className= {(clubwebsite === "") ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Club Website")}}><IdcardOutlined style= {{color: '#FFFFFF'}} href = {clubwebsite}/></a>
-                        <a className={(instagram === "") ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Instagram")}}><InstagramOutlined style= {{color: '#FFFFFF'}} href = {instagram}/></a> 
-                        <a className={(email === "") ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Email")}}><MailOutlined style= {{color: '#FFFFFF'}} href = {email}/></a>
-                        <a className = {(classroom === "") ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Google Classroom")}}><img className = "social"/></a>
-                        <a className = {(other === "") ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Other Website's")}}><LinkOutlined style= {{color: '#FFFFFF'}} href = {other}/></a>
+                        <a className= {(clubwebsite === null) ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Club Website")}}><IdcardOutlined style= {{color: '#FFFFFF'}} href = {clubwebsite}/></a>
+                        <a className={(instagram === null) ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Instagram")}}><InstagramOutlined style= {{color: '#FFFFFF'}} href = {instagram}/></a> 
+                        <a className={(email === null) ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Email")}}><MailOutlined style= {{color: '#FFFFFF'}} href = {email}/></a>
+                        <a className = {(classroom === null) ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Classroom")}}><img style={{height: "85%"}} src = {require('./img/googleclassroomlogo.png').default}/></a>
+                        <a className = {(other === null) ? "socialnull" : "social"} onClick = {() => {onSocialAdd("Other")}}><LinkOutlined style= {{color: '#FFFFFF'}} href = {other}/></a>
                 </div>        
         </>
         );

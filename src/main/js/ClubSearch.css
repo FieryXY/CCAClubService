@@ -15,7 +15,15 @@ body {
 }
 
 
-
+.clubResult {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 100%;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
 
 .clubListText {
@@ -53,6 +61,14 @@ body {
 
 .logo {
     margin-right: 20px;
+    border-radius: 50%;
+}
+
+.clubSearchImage {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
 }
 
 
@@ -62,7 +78,7 @@ body {
 
 .clubList {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 hr {
@@ -72,7 +88,7 @@ hr {
     border: none;
 }
 
-input[type=text] {
+.searchBar {
     width: 80%;
     padding: 12px 20px;
     margin: 15px 10%;
@@ -115,23 +131,35 @@ input[type=button]:hover {
     float: right;
     width: 32.5%;
     height: 100%;
+
     background-color: #3A4750;
-    padding: 5px;
+    padding: 10px;
     border-radius: 20px;
     overflow-wrap: anywhere;
-    text-align:left;
+    text-align:center;
 }
 
 .tags h1 {
     text-align: center;
 }
 
+.tagList {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+
+    overflow-y: scroll;
+    max-height: 320px;
+}
+
 .tag {
-   
+    flex: 0 0 auto;
     text-decoration: none;
-    margin-left: 5%;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    margin-left: 20px;
+    margin-bottom: 20px;
     padding-right: 10px;
     padding-left: 10px;
     background: #D72323;
@@ -152,6 +180,11 @@ input[type=button]:hover {
     border-radius: 10px;
     line-height: 40px;
     white-space: nowrap;
+    color: #EEEEEE;
+    cursor: default;
+}
+
+.displayTag:hover {
     color: #EEEEEE;
 }
 
@@ -181,13 +214,17 @@ input[type=button]:hover {
     background-color: #303841;
 }
 
+.tagUnselected {
+    color: white;
+    background-color: #D72323;
+}
+
 .tagWithSmallerMargin:hover {
     color: white;
     background-color: #ae3131;
 }
 
 .writeups {
-    float: left;
     width: 62.5%;
     height: 100%;
 }
@@ -281,6 +318,16 @@ footer {
 
     .homebtn {
         width: 180px;
+    }
+
+    .tags {
+        float: none;
+        margin-bottom: 50px;
+        width: 100%;
+    }
+
+    .writeups {
+        width: 100%;
     }
 }
 

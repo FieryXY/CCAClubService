@@ -1,6 +1,7 @@
 import React, {useRef, useState, useEffect} from 'react'
 import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop, {centerCrop, makeAspectCrop} from 'react-image-crop';
+import "./ClubEditor.css";  
 
 
 const storageSideLength = 200;
@@ -20,6 +21,11 @@ const PfpModal = (props) => {
 
 
     const createImageFromCrop = () => {
+
+      if(image == null || image == "") {
+        return;
+      }
+
       let canvas = document.getElementById("invisible-canvas")
       let ctx = canvas.getContext("2d")
       canvas.width = storageSideLength;
@@ -63,8 +69,8 @@ const PfpModal = (props) => {
       }
 
     const handleFileInput = (e) => {
-        const file = e.target.files[0];
         setShowImageLoading(false);
+        const file = e.target.files[0];
         if(file == null) return;
         //change this back later
         if (file.size < 2048) {
@@ -83,15 +89,21 @@ const PfpModal = (props) => {
 
     return (
         <div>
-            <form encType= "multipart/form-data">
-            <h1>Select a Club Profile Picture</h1>
+            <form encType= "multipart/form-data" className="pfpForm">
+            <h1 className="clubSearchPageH1">Select a Club Profile Picture</h1>
             {showImageLoading && <p>Image Loading...</p>}
-            <input type = "file" name="myImage" accept="image/x-png,image/jpeg" onChange={handleFileInput} ref={fileInput} onClick={() => {setShowImageLoading(true)}}/>
+
+            
+            
             <ReactCrop crop={crop} onChange={(_, percentCrop) => setCrop(percentCrop)} circularCrop = {true} keepSelection = {true} aspect = {1} style={{maxWidth: "40%"}}>
                 <img id="target" src={image} onLoad = {onImageLoad} style={{maxWidth: "100%", height: "auto"}}/>
             </ReactCrop>
-            
-            <button onClick={e => fileInput.current && fileInput.current.click()}>Select File</button>
+
+            <label>
+              <input type = "file" name="myImage" accept="image/x-png,image/jpeg" onChange={handleFileInput} ref={fileInput} onClick={() => {setShowImageLoading(true)}}
+               style={{display:"none"}}   />
+              <span className="pfpFileInput">Choose File</span>
+            </label>
             
             <input type ="button" value="Submit" onClick = {submitForm}/>
 

@@ -9,25 +9,39 @@ import Login from './login';
 import ClubProfile from './ClubProfile';
 import ClubSearchPage from './ClubSearch';
 import ClubEditor from './ClubEditor';
-import { MemoryRouter as Router, Switch, Route, Routes } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, Routes } from 'react-router-dom';
 import {Navigate} from "react-router-dom";
 import FeaturedPage from "./components/featuredPage";
 import Modal from 'react-modal';
+import {useNavigate} from "react-router-dom";
 
 Modal.setAppElement("#root"); 
 function App() { 
   
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const logOut = (navigate) => {
+    if(sessionStorage.getItem("accessToken") != null) {
+      sessionStorage.removeItem("accessToken");
+      sessionStorage.removeItem("clubId");
+        setLoggedIn(false);
+
+        let currentURL = window.location.href;
+        if(currentURL.endsWith("#/club-editor")) {
+          navigate("/login")
+        }
+    }
+  }
 
   useEffect(() => {
     if(!isLoggedIn && sessionStorage.getItem("accessToken") != null) {
       setLoggedIn(true)
     }
   }, []);
+
   return (
     <Router>
       <div className="App">
-        <Nav isLoggedIn = {isLoggedIn} setLoggedIn = {setLoggedIn}/>
+        <Nav logOut={logOut} isLoggedIn = {isLoggedIn} setLoggedIn = {setLoggedIn}/>
           <Routes>
               <Route exact path="/" element={<Navigate to="/about"/>}/>
               <Route path="/featured-page" element={<FeaturedPage />} />

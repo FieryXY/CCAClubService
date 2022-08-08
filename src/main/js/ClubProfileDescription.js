@@ -1,5 +1,5 @@
 import React, {useParams, useState} from 'react';
-import "./ClubProfile.css";
+import "./ClubProfile.css";;
 import 'antd/dist/antd.css';
 import Login from './login.js'; 
 import {
@@ -10,33 +10,58 @@ import {
         } from "@ant-design/icons";
 
 const ClubProfileDescription = (props) => {
-    let socials = props.clubInfo["clubSocialDOS"];
-    let clubwebsite = null; 
-    let instagram = null;
-    let email = null;
-    let classroom = null;
-    let other = null;
-    for(const social of socials) {
-        if(social["socialName"] = "Club Website") clubwebsite = social["socialLink"];
-        if(social["socialName"] = "Instagram") instagram = social["socialLink"];
-        if(social["socialName"] = "Email") email = "mailto:" + social["socialLink"];
-        if(social["socialName"] = "Classroom") classroom = social["socialLink"];
-        if(social["socialName"] = "Other") other = social["socialLink"];
+
+    const formatURL = (url) => {
+
+        if (url === null) {
+            return null;
+        }
+
+        if(!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "http://" + url;
+        }
+        return url;
+    }
+
+
+    if(props.clubInfo == null) {
+        return (
+            <h1 className="clubProfileTitle" style={{textAlign: "center"}}>Unable to Load Club Profile for this Club</h1>
+        );
     }
   
+
+
+        let socials = props.clubInfo["clubSocialDOS"];
+        let clubwebsite = null; 
+        let instagram = null;
+        let email = null;
+        let classroom = null;
+        let other = null;
+        for(const social of socials) {
+            if(social["socialName"] == "Club Website") clubwebsite = social["socialLink"];
+            if(social["socialName"] == "Instagram") instagram = social["socialLink"];
+            if(social["socialName"] == "Email") email = "mailto:" + social["socialLink"];
+            if(social["socialName"] == "Classroom") classroom = social["socialLink"];
+            if(social["socialName"] == "Other") other = social["socialLink"];
+        }
+    
 
 
 return (
     <>
 <div className="twoColumnContainer">
         <div className="twoColumnElement verticalCenter">
-                <img className="clubProfilePicture" src = {(props.clubInfo["profilePictureUrl"] === null) ? "./img/ccalogo.png" : props.clubInfo["profilePictureUrl"]}/>
+            <div style={{position: "relative", width:"50%"}}>
+                <img className="clubProfilePicture" src = {(props.clubInfo["profilePictureUrl"] === null) ? require("./img/ccalogo.png").default : props.clubInfo["profilePictureUrl"]}/>
+            </div>
             <div className="linkShelf">
-                <a className= {(clubwebsite === null) ? "socialnull" : "social"}><IdcardOutlined style= {{color: '#FFFFFF'}} href = {clubwebsite}/></a>
-                <a className={(instagram === null) ? "socialnull" : "social"}><InstagramOutlined style= {{color: '#FFFFFF'}} href = {instagram}/></a> 
+                <a className= {(clubwebsite === null) ? "socialnull" : "social"}><IdcardOutlined style= {{color: '#FFFFFF'}} href = {formatURL(clubwebsite)}/></a>
+                <a className={(instagram === null) ? "socialnull" : "social"}><InstagramOutlined style= {{color: '#FFFFFF'}} href = {formatURL(instagram)}/></a> 
                 <a className={(email === null) ? "socialnull" : "social"}><MailOutlined style= {{color: '#FFFFFF'}} href = {email}/></a>
-                <a className = {(classroom == null) ? "socialnull" : "social"} href = {classroom}><img className = "social"/></a>
-                <a className = {(other == null) ? "socialnull" : "social"}><LinkOutlined style= {{color: '#FFFFFF'}} href = {other}/></a>
+                <a className = {(classroom == null) ? "socialnull" : "social"} href = {formatURL(classroom)} target="_blank"><img style={{height: "85%"}} src = {require('./img/googleclassroomlogo.png').default}/></a>
+
+                <a className = {(other == null) ? "socialnull" : "social"}><LinkOutlined style= {{color: '#FFFFFF'}} href = {formatURL(other)}/></a>
             </div>
         </div>
         <div className="twoColumnElement" style={{flexGrow:"2"}}>

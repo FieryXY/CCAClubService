@@ -25,7 +25,7 @@ const ClubEditorTags = (props) => {
             <Modal style = {{content: {"background" : "#3A4750", "overflow" : "scroll", "borderRadius" : "25px"}}} isOpen = {tagModalIsOpen} onRequestClose = {() => {setTagModalIsOpen(false)}}><AddTagModal  clubTags = {props.clubTags} setRefresh = {props.setRefresh} /></Modal>
             <div className="clubProfileTagDiv">
                 {props.clubTags.map(clubTag=>(
-                        <a key = {clubTag} className = "displayTagRed">{clubTag}<CloseOutlined onClick = {() => onTagRemove(clubTag)}/></a>
+                        <a key = {clubTag} className = "displayTagRed">{clubTag}<CloseOutlined onClick = {() => onTagRemove(clubTag)} style={{marginLeft: "10px"}}/></a>
                 ))}
                     <a className="displayTagRed" style={{textAlign: "center"}} onClick = {onTagAdd}><PlusOutlined/></a> 
             </div>

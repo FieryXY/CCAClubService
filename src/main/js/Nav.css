@@ -12,17 +12,28 @@
   }
   
   .logOutButton {
+    
+    position: fixed;
+    right: 20px;
+    top: 20px;
+
     text-decoration: none;
     margin-left: 5%;
     padding-top: 5px;
     padding-bottom: 5px;
     padding-right: 10px;
     padding-left: 10px;
-    background: #D72323;
+    background: #303841;
     border-radius: 10px;
     line-height: 40px;
     white-space: nowrap;
     color: #EEEEEE;
+
+    cursor: pointer;
+  }
+
+  .logOutButton:hover {
+    background: #D72323;
   }
 
   nav {
@@ -111,16 +122,145 @@
     overflow: hidden;
   }
 
-@media only screen and (max-width: 720px) {
+
+
+/*Hamburger CSS */
+.menuIconContainer {
+  position: absolute;
+  width: 5.5rem;
+  height: 5.5rem;
+  top: 1.5rem;
+  left: 1.5rem;
+  border-radius: 25%;
+  z-index: 9;
+
+  display: none;
+  visibility: hidden;
+
+  z-index: 6;
+}
+
+.menuIcon {
+  background: #303841;
+  width: 100%;
+  height: 100%;
+  border-radius: 25%;
+  top: 1.5rem;
+  left: 1.5rem;
+  transition: 0.5s;
+  
+}
+
+.hamburger {
+  position: absolute;
+  left: 20%;
+  width: 60%;
+  height: 12%;
+  bottom: 24%;
+  background-color: white;
+  transition: 0.5s;
+}
+
+.hamburger2 {
+  position: absolute;
+  left: 20%;
+  width: 60%;
+  height: 12%;
+  bottom: 44%;
+  background-color: white;
+  transition: 0.5s;
+}
+
+.hamburger3 {
+  position: absolute;
+  left: 20%;
+  width: 60%;
+  height: 12%;
+  bottom: 64%;
+  background-color: white;
+  transition: 0.5s;
+}
+
+.menuIcon:hover {
+  background-color: #D72323;
+}
+
+/* .menuIconContainer:hover .hamburger {
+  background-color: rgb(207, 207, 207);
+}
+
+.menuIconContainer:hover .hamburger2 {
+  background-color: rgb(207, 207, 207);
+}
+
+.menuIconContainer:hover .hamburger3 {
+  background-color: rgb(207, 207, 207);
+} */
+
+.menuIconContainer:hover .menuIcon {
+  background-color: #D72323;
+}
+
+
+@media only screen and (max-width: 900px) {
   nav {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
   }
   .nav-links {
-    flex-wrap: wrap;
+    position: fixed;
+    flex-direction: column;
+    z-index: 5;
+    margin: 0;
+    padding: 0;
+
+    height: 100%;
+    width: 100%;
+
+    top: -100%;
+
+    padding-top: 10px;
+
+    justify-content: space-evenly;
+    background-color: #3A4750; 
+
+    transition: transform 1s;
   }
   .nav-title {
     display: none;
+  }
+  .nav-header {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .buttonLi {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+  }
+  .button {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 60px;
+
+    border-color: black;
+    border-bottom-width: 3px;
+    border-style: solid;
+  }
+
+  nav {
+    padding-bottom: 20px;
+  }
+
+  .menuIconContainer {
+    display: inline-block;
+    visibility: visible;
   }
 }

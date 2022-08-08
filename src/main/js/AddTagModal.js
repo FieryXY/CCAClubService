@@ -27,7 +27,7 @@ const AddTagModal = (props) => {
                 {allTags.map(clubTags =>{
                 let isContainedInClubTags = props.clubTags.includes(clubTags);
                 return(
-                 <a key = {clubTags} onClick= {() => {toggleTag(clubTags)}} className= {`tag ${isContainedInClubTags ? "tagSelected" : ""} clubSearchPageA`}>{clubTags}</a>
+                 <a key = {clubTags} onClick= {() => {toggleTag(clubTags)}} className= {`displayTag ${isContainedInClubTags ? "tagSelected" : "tagUnselected"} clubSearchPageA`}>{clubTags}</a>
                     
                 )})}
             </div>
