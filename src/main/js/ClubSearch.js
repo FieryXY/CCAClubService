@@ -45,23 +45,26 @@ const ClubSearchPage = () => {
         }
 
         const filterClubs = () => {
-            let filteredClubs = allClubs;
-            if(clubTagFilters.length > 0) {
-                filteredClubs = filteredClubs.filter(club => {
-                    return clubTagFilters.every(tag => club["clubCategories"].includes(tag));
+                let filteredClubs = allClubs;
+                if(clubTagFilters.length > 0) {
+                    filteredClubs = filteredClubs.filter(club => {
+                        return clubTagFilters.every(tag => club["clubCategories"].includes(tag));
+                    });
+                }
+                if(clubSearchQuery !== "") {
+                    // filteredClubs = filteredClubs.filter(club => {
+                    //     return club["clubName"].toLowerCase().includes(clubSearchQuery.toLowerCase());
+                    // });
+                    filteredClubs = filteredClubs.filter(club => {
+                        return calculateDistance(club["clubName"].toLowerCase(), clubSearchQuery.toLowerCase()) <= editDistanceThreshold || club["clubName"].toLowerCase().includes(clubSearchQuery.toLowerCase());
+                    });
+                }
+                //Sort clubs by distance from search query in increasing order
+                filteredClubs.sort((club1, club2) => {
+                    return calculateDistance(clubSearchQuery, club1["clubName"]) - calculateDistance(clubSearchQuery, club2["clubName"]);
                 });
+                setClubResultList(filteredClubs);
             }
-            if(clubSearchQuery !== "") {
-                filteredClubs = filteredClubs.filter(club => {
-                                return calculateDistance(club["clubName"].toLowerCase(), clubSearchQuery.toLowerCase()) <= editDistanceThreshold;
-                });
-            }
-            //Sort clubs by distance from search query in increasing order
-            filteredClubs = filteredClubs.filter(club => {
-                            return calculateDistance(club["clubName"].toLowerCase(), clubSearchQuery.toLowerCase()) <= editDistanceThreshold || club["clubName"].toLowerCase().includes(clubSearchQuery.toLowerCase());
-            });
-            setClubResultList(filteredClubs);
-        }
     
     useEffect(() => {
         ClubService.doClubList().then(response => {
