@@ -43,7 +43,7 @@ const ClubEditorSocials = (props) => {
                                 setSocialModalIsOpen(false);
                                 setCurrentSocial(null);           
                         }}>
-                        <SocialModal setSocialModalIsOpen={setSocialModalIsOpen} socialMap = {{"Club Website" : clubwebsite, "Instagram" : instagram, "Email" : (email == null) ? email.substring(7) : null, "Classroom": classroom, "Other" : other}} setRefresh = {props.setRefresh}
+                        <SocialModal setSocialModalIsOpen={setSocialModalIsOpen} socialMap = {{"Club Website" : clubwebsite, "Instagram" : instagram, "Email" : (email != null) ? email.substring(7) : null, "Classroom": classroom, "Other" : other}} setRefresh = {props.setRefresh}
                                                         setCurrentSocial = {setCurrentSocial} currentSocial = {currentSocial} setClubSocials = {props.setClubSocials}/>
                 </Modal>
                 <div className="linkShelf">

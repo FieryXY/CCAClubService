@@ -11,7 +11,7 @@ const maxDescriptionChars = 100;
 const ClubResult = (props) => {
     let navigate = useNavigate();
     function nav() {
-     navigate('/club-profile/' + props.clubJSON["clubId"], {replace:true});
+     navigate('/club-profile/' + props.clubJSON["clubId"]);
     }
 
     //If the description is too long, cut it off and add an ellipsis
