@@ -6,7 +6,7 @@ import ClubTagBox from "./ClubTagBox.js";
 import ClubResults from "./ClubResults.js";
 import ClubService from './ClubService.js';
 
-const editDistanceThreshold = 3;
+const editDistanceThreshold = 5;
 
 const ClubSearchPage = () => {
     
@@ -57,8 +57,8 @@ const ClubSearchPage = () => {
                 });
             }
             //Sort clubs by distance from search query in increasing order
-            filteredClubs.sort((club1, club2) => {
-                return calculateDistance(clubSearchQuery, club1["clubName"]) - calculateDistance(clubSearchQuery, club2["clubName"]);
+            filteredClubs = filteredClubs.filter(club => {
+                            return calculateDistance(club["clubName"].toLowerCase(), clubSearchQuery.toLowerCase()) <= editDistanceThreshold || club["clubName"].toLowerCase().includes(clubSearchQuery.toLowerCase());
             });
             setClubResultList(filteredClubs);
         }
