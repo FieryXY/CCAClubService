@@ -25,7 +25,7 @@ const SocialModal = (props) => {
     return(
         <>
             <h1 className="clubSearchPageH1">Change {props.currentSocial} Link</h1>
-            <input value = {link} onChange={onDescriptionChange} className="socialLinkEditor"/>
+            <input value = {link} onChange={onDescriptionChange} className="socialLinkEditor" onKeyPress = {handleKeyPress}/>
             <button className = "descChangeButton" onClick = {onLinkSubmit}>Submit</button> 
             <button className = "descChangeButton" onClick = {onLinkRemove}>Remove Link</button> 
         </>

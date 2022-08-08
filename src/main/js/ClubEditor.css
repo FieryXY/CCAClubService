@@ -110,7 +110,13 @@
     white-space: nowrap;
     color: #EEEEEE;
     cursor: pointer;
+    transition: background 0.5s;
 }
+
+.descChangeButton:active {
+    background: #b21e1e
+}
+
 .clubProfileTagDiv {
     margin-top: 3rem;
 }

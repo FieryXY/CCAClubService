@@ -43,7 +43,7 @@ function App() {
       <div className="App">
         <Nav logOut={logOut} isLoggedIn = {isLoggedIn} setLoggedIn = {setLoggedIn}/>
           <Routes>
-              <Route exact path="/" element={<Navigate to="/about"/>}/>
+              <Route exact path="/" element={<Navigate to="/featured-page"/>}/>
               <Route path="/featured-page" element={<FeaturedPage />} />
               <Route path="/about" element={<Intro />} />
               <Route path="/manage-clubs" element={<About />} />
