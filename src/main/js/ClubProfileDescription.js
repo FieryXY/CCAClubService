@@ -56,12 +56,12 @@ return (
                 <img className="clubProfilePicture" src = {(props.clubInfo["profilePictureUrl"] === null) ? require("./img/ccalogo.png").default : props.clubInfo["profilePictureUrl"]}/>
             </div>
             <div className="linkShelf">
-                <a className= {(clubwebsite === null) ? "socialnull" : "social"}><IdcardOutlined style= {{color: '#FFFFFF'}} href = {formatURL(clubwebsite)}/></a>
-                <a className={(instagram === null) ? "socialnull" : "social"}><InstagramOutlined style= {{color: '#FFFFFF'}} href = {formatURL(instagram)}/></a> 
-                <a className={(email === null) ? "socialnull" : "social"}><MailOutlined style= {{color: '#FFFFFF'}} href = {email}/></a>
-                <a className = {(classroom == null) ? "socialnull" : "social"} href = {formatURL(classroom)} target="_blank"><img style={{height: "85%"}} src = {require('./img/googleclassroomlogo.png').default}/></a>
+                <a className= {(clubwebsite === null) ? "socialnull" : "social"} href = {formatURL(clubwebsite)} target="_blank"><IdcardOutlined style= {{color: '#FFFFFF'}}/></a>
+                                <a className={(instagram === null) ? "socialnull" : "social"} href = {formatURL(instagram)} target="_blank"><InstagramOutlined style= {{color: '#FFFFFF'}}/></a>
+                                <a className={(email === null) ? "socialnull" : "social"} href = {email} target="_blank"><MailOutlined style= {{color: '#FFFFFF'}}/></a>
+                                <a className = {(classroom == null) ? "socialnull" : "social"} href = {formatURL(classroom)} target="_blank"><img style={{height: "85%"}} src = {googleclassroom}/></a>
 
-                <a className = {(other == null) ? "socialnull" : "social"} href = {formatURL(other)}><LinkOutlined style= {{color: '#FFFFFF'}}/></a>
+                                <a className = {(other == null) ? "socialnull" : "social"} href = {formatURL(other)} target="_blank"><LinkOutlined style= {{color: '#FFFFFF'}}/></a>
             </div>
         </div>
         <div className="twoColumnElement" style={{flexGrow:"2"}}>
