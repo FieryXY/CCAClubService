@@ -61,7 +61,7 @@ return (
                 <a className={(email === null) ? "socialnull" : "social"}><MailOutlined style= {{color: '#FFFFFF'}} href = {email}/></a>
                 <a className = {(classroom == null) ? "socialnull" : "social"} href = {formatURL(classroom)} target="_blank"><img style={{height: "85%"}} src = {require('./img/googleclassroomlogo.png').default}/></a>
 
-                <a className = {(other == null) ? "socialnull" : "social"}><LinkOutlined style= {{color: '#FFFFFF'}} href = {formatURL(other)}/></a>
+                <a className = {(other == null) ? "socialnull" : "social"} href = {formatURL(other)}><LinkOutlined style= {{color: '#FFFFFF'}}/></a>
             </div>
         </div>
         <div className="twoColumnElement" style={{flexGrow:"2"}}>
