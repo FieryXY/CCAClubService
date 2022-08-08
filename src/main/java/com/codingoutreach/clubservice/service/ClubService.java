@@ -2,8 +2,10 @@ package com.codingoutreach.clubservice.service;
 
 
 import com.codingoutreach.clubservice.controllers.DO.SocialCreationRequest;
+import com.codingoutreach.clubservice.dos.FeaturedClubInformationDO;
 import com.codingoutreach.clubservice.models.SocialCredentials;
 import com.codingoutreach.clubservice.repository.DTO.Category;
+import com.codingoutreach.clubservice.repository.DTO.FeaturedClubInformation;
 import com.codingoutreach.clubservice.security.JWTUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -130,5 +132,15 @@ public class ClubService {
 
     public void removeSocial(UUID clubId, SocialCreationRequest social) {
         clubRepository.removeSocial(clubId, social.getSocialName());
+    }
+
+    public List<FeaturedClubInformationDO> getFeaturedClubs() {
+        List<FeaturedClubInformation> repoList = clubRepository.getFeaturedClubs();
+        List<FeaturedClubInformationDO> toReturn = new ArrayList<FeaturedClubInformationDO>();
+        for(FeaturedClubInformation info : repoList) {
+            String clubName = clubRepository.getClubByClubId(info.getClubId()).getName();
+            toReturn.add(new FeaturedClubInformationDO(info.getClubId(), clubName, info.getDescription(), info.getMediaURL()));
+        }
+        return toReturn;
     }
 }

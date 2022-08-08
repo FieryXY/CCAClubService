@@ -1,17 +1,13 @@
 package com.codingoutreach.clubservice.repository;
 
 
-import com.codingoutreach.clubservice.repository.DTO.Club;
-import com.codingoutreach.clubservice.repository.DTO.ClubUser;
+import com.codingoutreach.clubservice.repository.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.codingoutreach.clubservice.repository.DTO.Category;
 import com.codingoutreach.clubservice.repository.DTO.Club;
-import com.codingoutreach.clubservice.repository.DTO.ClubCategory;
-import com.codingoutreach.clubservice.repository.DTO.ClubSocial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -61,6 +57,8 @@ public class ClubRepository {
     private final String REMOVE_SOCIAL = "DELETE FROM socials WHERE club_id=? AND social_name=?";
 
     private final String SOCIAL_EXISTS = "SELECT * FROM socials WHERE club_id=? AND social_name=?";
+
+    private final String GET_FEATURED_CLUBS = "SELECT * FROM featured_clubs";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -127,6 +125,16 @@ public class ClubRepository {
             String username = resultSet.getString("username");
             String encoded_password = resultSet.getString("encoded_password");
             return new ClubUser(clubID, username, encoded_password);
+        });
+    }
+
+    public RowMapper<FeaturedClubInformation> mapFeaturedClubs() {
+        return ((resultSet, i) -> {
+            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
+            String textContent = resultSet.getString("text_content");
+            String mediaURL = resultSet.getString("media_url");
+
+            return new FeaturedClubInformation(clubId, textContent, mediaURL);
         });
     }
 
@@ -209,6 +217,10 @@ public class ClubRepository {
             return null;
         }
         return temp.get(0).getClubSocialId();
+    }
+
+    public List<FeaturedClubInformation> getFeaturedClubs() {
+        return jdbcTemplate.query(GET_FEATURED_CLUBS, mapFeaturedClubs());
     }
 }
 
