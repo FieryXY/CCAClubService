@@ -59,7 +59,7 @@ return (
                 <a className= {(clubwebsite === null) ? "socialnull" : "social"} href = {formatURL(clubwebsite)} target="_blank"><IdcardOutlined style= {{color: '#FFFFFF'}}/></a>
                                 <a className={(instagram === null) ? "socialnull" : "social"} href = {formatURL(instagram)} target="_blank"><InstagramOutlined style= {{color: '#FFFFFF'}}/></a>
                                 <a className={(email === null) ? "socialnull" : "social"} href = {email} target="_blank"><MailOutlined style= {{color: '#FFFFFF'}}/></a>
-                                <a className = {(classroom == null) ? "socialnull" : "social"} href = {formatURL(classroom)} target="_blank"><img style={{height: "85%"}} src = {googleclassroom}/></a>
+                                <a className = {(classroom == null) ? "socialnull" : "social"} href = {formatURL(classroom)} target="_blank"><img style={{height: "85%"}} src = {require("./img/googleclassroomlogo.png").default}/></a>
 
                                 <a className = {(other == null) ? "socialnull" : "social"} href = {formatURL(other)} target="_blank"><LinkOutlined style= {{color: '#FFFFFF'}}/></a>
             </div>
