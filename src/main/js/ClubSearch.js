@@ -14,20 +14,52 @@ const ClubSearchPage = () => {
     const [clubResultList, setClubResultList] = useState([]);
     const [allClubs, setAllClubs] = useState([]);
 
-    const filterClubs = () => {
-        let filteredClubs = allClubs;
-        if(clubTagFilters.length > 0) {
-            filteredClubs = filteredClubs.filter(club => {
-                return clubTagFilters.every(tag => club["clubCategories"].includes(tag));
-            });
+    //Calculate the Damerau-Levenshtein distance between two strings (I have no clue how this works)
+        const calculateDistance = (str1, str2) => {
+            let distanceMatrix = [];
+            for (let i = 0; i <= str2.length; i++) {
+                let row = [i];
+                distanceMatrix.push(row);
+            }
+            let firstRow = distanceMatrix[0];
+            for (let j = 0; j <= str1.length; j++) {
+                firstRow.push(j);
+            }
+            for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                    if (str2.charAt(i-1) == str1.charAt(j-1)) {
+                        distanceMatrix[i][j] = distanceMatrix[i-1][j-1];
+                    } else {
+                        distanceMatrix[i][j] = Math.min(distanceMatrix[i-1][j-1] + 1, // substitution
+                                                        distanceMatrix[i][j-1] + 1, // insertion
+                                                        distanceMatrix[i-1][j] + 1); // deletion
+                    }
+                    if (i > 1 && j > 1 && str2.charAt(i-1) == str1.charAt(j-2) && str2.charAt(i-2) == str1.charAt(j-1)) {
+                        distanceMatrix[i][j] = Math.min(distanceMatrix[i][j], distanceMatrix[i-2][j-2] + 1); // transposition
+                    }
+                }
+            }
+            return distanceMatrix[str2.length][str1.length];
         }
-        if(clubSearchQuery !== "") {
-            filteredClubs = filteredClubs.filter(club => {
-                return club["clubName"].toLowerCase().includes(clubSearchQuery.toLowerCase());
+
+        const filterClubs = () => {
+            let filteredClubs = allClubs;
+            if(clubTagFilters.length > 0) {
+                filteredClubs = filteredClubs.filter(club => {
+                    return clubTagFilters.every(tag => club["clubCategories"].includes(tag));
+                });
+            }
+            if(clubSearchQuery !== "") {
+                filteredClubs = filteredClubs.filter(club => {
+                    return club["clubName"].toLowerCase().includes(clubSearchQuery.toLowerCase());
+                });
+            }
+            //Sort clubs by distance from search query in increasing order
+            filteredClubs.sort((club1, club2) => {
+                return calculateDistance(clubSearchQuery, club1["clubName"]) - calculateDistance(clubSearchQuery, club2["clubName"]);
             });
+            setClubResultList(filteredClubs);
         }
-        setClubResultList(filteredClubs);
-    }    
     
     useEffect(() => {
         ClubService.doClubList().then(response => {
