@@ -1,5 +1,7 @@
 package com.codingoutreach.clubservice.controllers;
 
+import com.codingoutreach.clubservice.controllers.DO.PasswordCodeVerificationRequest;
+import com.codingoutreach.clubservice.controllers.DO.ResetPasswordRequest;
 import com.codingoutreach.clubservice.controllers.DO.SocialCreationRequest;
 import com.codingoutreach.clubservice.dos.FeaturedClubInformationDO;
 import com.codingoutreach.clubservice.models.*;
@@ -175,7 +177,7 @@ public class ClubController {
     @PostMapping
     @RequestMapping(path="/password/reset/email")
     public void resetPasswordEmail(@RequestBody Email body) throws MessagingException{
-        if (clubService.checkEmail(body.getEmail())) {
+        if (!clubService.checkEmail(body.getEmail())) {
             throw new IllegalArgumentException("Email Not Found");
         } else {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -188,11 +190,27 @@ public class ClubController {
             javaMailSender.send(mimeMessage);
         }
     }
+
+    @CrossOrigin
+    @PostMapping
+    @RequestMapping(path="/password/reset/request/{clubId}")
+    public void resetPasswordCreate(@PathVariable("clubId") UUID clubId) {
+        clubService.resetPasswordCreate(clubId);
+
+    }
+
+    @CrossOrigin
+    @PostMapping
+    @RequestMapping(path="/password/reset/verify/{clubId}")
+    public void resetPasswordVerify(@PathVariable("clubId") UUID clubId, @RequestBody PasswordCodeVerificationRequest request) {
+        clubService.verifyPasswordCode(request);
+    }
+
     @CrossOrigin
     @PostMapping
     @RequestMapping(path="/password/reset/{clubId}")
-    public void resetPassword(@PathVariable("clubId") UUID clubId, String password) {
-        clubService.resetPassword(clubId, password);
+    public void resetPassword(@PathVariable("clubId") UUID clubId, @RequestBody ResetPasswordRequest request) {
+        clubService.resetPassword(request);
     }
 
     /**

@@ -1,13 +1,18 @@
 package com.codingoutreach.clubservice.service;
 
 
+import com.codingoutreach.clubservice.ClubApplication;
+import com.codingoutreach.clubservice.controllers.DO.PasswordCodeVerificationRequest;
+import com.codingoutreach.clubservice.controllers.DO.ResetPasswordCreationRequest;
+import com.codingoutreach.clubservice.controllers.DO.ResetPasswordRequest;
 import com.codingoutreach.clubservice.controllers.DO.SocialCreationRequest;
 import com.codingoutreach.clubservice.dos.FeaturedClubInformationDO;
-import com.codingoutreach.clubservice.models.SocialCredentials;
+import com.codingoutreach.clubservice.models.Email;
 import com.codingoutreach.clubservice.repository.DTO.Category;
 import com.codingoutreach.clubservice.repository.DTO.FeaturedClubInformation;
-import com.codingoutreach.clubservice.security.JWTUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,12 +27,17 @@ import com.codingoutreach.clubservice.repository.DTO.ClubSocial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ClubService {
     private ClubRepository clubRepository;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @Autowired
     public ClubService(ClubRepository clubRepository) {
@@ -157,4 +167,55 @@ public class ClubService {
         }
     }
 
+    public void resetPasswordCreate(UUID clubId) {
+        Club club = clubRepository.getClubByClubId(clubId);
+
+        //Generate random 6 digit number code
+        Random rand = new Random();
+        String randCode = "";
+        for (int i = 0; i < 6; i++) {
+            randCode += rand.nextInt(10);
+        }
+
+        try {
+            sendEmail(new Email(club.getEmail(), "Password Reset", "Your password reset email is: " + ClubApplication.WEBSITE_RESET_PASSWORD_URL + randCode));
+        } catch (MessagingException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Email could not be sent"
+            );
+        }
+    }
+
+    public boolean verifyPasswordCode(PasswordCodeVerificationRequest request) {
+        List<ResetPasswordCreationRequest> passwordRequests = clubRepository.getResetPasswordRequests(request.getClubId());
+        for(ResetPasswordCreationRequest r : passwordRequests) {
+            if(r.getResetCode().equals(request.getResetCode())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void resetPassword(ResetPasswordRequest request) {
+        PasswordCodeVerificationRequest verificationRequest = new PasswordCodeVerificationRequest(request.getClubId(), request.getResetCode());
+        if(verifyPasswordCode(verificationRequest)) {
+            clubRepository.resetPassword(request.getClubId(), request.getNewPassword());
+        }
+        else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Invalid reset code"
+            );
+        }
+    }
+
+    public void sendEmail(Email email) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        String htmlMsg = email.getText();
+        helper.setText(htmlMsg, true);
+        helper.setFrom("coding.outreach@gmail.com");
+        helper.setTo(email.getEmail());
+        helper.setSubject(email.getSubject());
+        javaMailSender.send(mimeMessage);
+    }
 }

@@ -68,3 +68,11 @@ CREATE TABLE IF NOT EXISTS users (
     encoded_password VARCHAR(200) NOT NULL,
     user_role VARCHAR(200) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS reset_password_requests (
+    request_id UUID NOT NULL PRIMARY KEY,
+    club_id UUID NOT NULL,
+    reset_code VARCHAR(200) NOT NULL,
+    expiration_date TIMESTAMP NOT NULL,
+    FOREIGN KEY (club_id) REFERENCES club(club_id)
+);

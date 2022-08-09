@@ -1,6 +1,8 @@
 package com.codingoutreach.clubservice.repository;
 
 
+import com.codingoutreach.clubservice.ClubApplication;
+import com.codingoutreach.clubservice.controllers.DO.ResetPasswordCreationRequest;
 import com.codingoutreach.clubservice.repository.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,12 +10,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.codingoutreach.clubservice.repository.DTO.Club;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 
-
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,6 +64,10 @@ public class ClubRepository {
 
     private final String VALID_EMAIL = "SELECT 1 FROM club WHERE email=?";
     private final String GET_FEATURED_CLUBS = "SELECT * FROM featured_clubs";
+
+    private final String INSERT_RESET_PASSWORD = "INSERT INTO reset_password_requests VALUES (?, ?, ?, ?)";
+
+    private final String GET_RESET_PASSWORD_BY_CLUB_ID = "SELECT * FROM reset_password_requests WHERE club_id=?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -139,6 +144,16 @@ public class ClubRepository {
             String mediaURL = resultSet.getString("media_url");
 
             return new FeaturedClubInformation(clubId, textContent, mediaURL);
+        });
+    }
+
+    public RowMapper<ResetPasswordCreationRequest> mapResetPasswordRequest() {
+        return ((resultSet, i) -> {
+            UUID requestId = UUID.fromString(resultSet.getString("request_id"));
+            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
+            String resetCode = resultSet.getString("reset_code");
+            Instant expirationDate = Instant.parse(resultSet.getString("expiration_date"));
+            return new ResetPasswordCreationRequest(requestId, clubId, resetCode, expirationDate);
         });
     }
 
@@ -233,5 +248,28 @@ public class ClubRepository {
     public List<FeaturedClubInformation> getFeaturedClubs() {
         return jdbcTemplate.query(GET_FEATURED_CLUBS, mapFeaturedClubs());
     }
+
+
+    public int insertResetPasswordRequest(UUID clubId, String resetCode) {
+
+        Instant expirationInstant = Instant.now().plus(ClubApplication.SECONDS_UNTIL_PASSWORD_REQUEST_EXPIRATION,
+                ChronoUnit.SECONDS);
+
+        //Expiration Instant to Timestamp
+        Timestamp expirationTimestamp = Timestamp.from(expirationInstant);
+
+        return jdbcTemplate.update(INSERT_RESET_PASSWORD, UUID.randomUUID(), clubId, resetCode,
+                expirationTimestamp);
+
+    }
+
+    //Get Reset Password Request
+    public List<ResetPasswordCreationRequest> getResetPasswordRequests(UUID clubId) {
+        return jdbcTemplate.query(GET_RESET_PASSWORD_BY_CLUB_ID, new Object[]{clubId}, mapResetPasswordRequest());
+    }
+
+
+
+
 }
 
