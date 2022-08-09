@@ -1,0 +1,93 @@
+/* Featured-Clubs Main Page */
+  
+  .featured-page-body {
+    margin: 0px;
+    padding-top: 30px;
+  
+    /* This part makes the background color extend to the bottom of the page */
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  
+  .featured-clubs-container {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+  
+  .featured-club-outer-div {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    margin-top: 30px;
+    background-color: white;
+    border-radius: 30px;
+  
+    display: flex;
+      
+    background-color: #fcddbb;
+  }
+  
+  .featured-club-arrow-side-column {
+    flex: 8%;
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .featured-club-arrow-side-column:hover {
+    background-color: rgb(240, 240, 240);
+  }
+  
+  .featured-club-arrow-side-column.left {
+    margin-right: 2%;
+  }
+  
+  .featured-club-arrow-side-column.right {
+    margin-left: 2%;
+  }
+  
+  .featured-club-arrow {
+    margin: 0 auto;
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    padding: 3px;
+    display: inline-block;
+  }
+  
+  .featured-club-arrow.left {
+    transform: rotate(135deg);
+  }
+  
+  .featured-club-arrow.right {
+    transform: rotate(-45deg);
+    justify-content: center;
+  }
+  
+  .featured-club-content-container {
+    flex: 80%;
+  }
+  
+  .featured-club-inner-img-div {
+    margin: 0 auto;
+    margin-top: 10px;
+    height: 300px;
+    background-color: pink;
+  }
+  
+  .featured-club-inner-description-div {
+    margin: 0 auto;
+    margin-top: 30px;
+    
+    font-size: 18px;
+    text-align: justify;
+  }
+  
+  @media (max-width: 800px) {
+    .featured-clubs-container {
+      margin-left: 5%;
+      margin-right: 5%;
+    }
+  }

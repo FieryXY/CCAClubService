@@ -16,6 +16,13 @@
     <description>Web Server for CCA Club Portal Web Application</description>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>com.github.eirslett</groupId>

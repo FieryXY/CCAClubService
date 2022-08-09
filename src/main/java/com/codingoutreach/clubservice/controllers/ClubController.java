@@ -1,7 +1,11 @@
 package com.codingoutreach.clubservice.controllers;
 
 import com.codingoutreach.clubservice.controllers.DO.SocialCreationRequest;
-import com.codingoutreach.clubservice.models.*;
+import com.codingoutreach.clubservice.dos.FeaturedClubInformationDO;
+import com.codingoutreach.clubservice.models.Description;
+import com.codingoutreach.clubservice.models.SocialCredentials;
+import com.codingoutreach.clubservice.models.Tags;
+import com.codingoutreach.clubservice.models.Title;
 import com.codingoutreach.clubservice.repository.DTO.Club;
 import com.codingoutreach.clubservice.dos.ClubInformation;
 import com.codingoutreach.clubservice.security.JWTUtil;
@@ -56,6 +60,12 @@ public class ClubController {
         return clubService.getAllTags();
     }
 
+    @GetMapping
+    @RequestMapping(path="/featured")
+    public List<FeaturedClubInformationDO> getFeaturedClubs() {
+        return clubService.getFeaturedClubs();
+    }
+
     @CrossOrigin
     @PostMapping
     @RequestMapping(path="/edit/socials/change/{clubId}")
@@ -71,13 +81,13 @@ public class ClubController {
     @CrossOrigin
     @PostMapping
     @RequestMapping(path="/edit/socials/remove/{clubId}")
-    public void removeSocials(@RequestBody SocialCredentials body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public void removeSocials(@RequestBody SocialCreationRequest body, @PathVariable("clubId") UUID clubId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (!isValidUser(clubId, token)) {
             throw new ResponseStatusException(
                 HttpStatus.UNAUTHORIZED, "Unauthorized to edit this club's page"
             );
         }
-        clubService.removeSocial(body);
+        clubService.removeSocial(clubId, body);
     }
 
 
@@ -116,6 +126,11 @@ public class ClubController {
                     HttpStatus.UNAUTHORIZED, "Unauthorized to edit this club's page"
             );
         }
+
+        if(body.getSocialLink().trim().length() == 0) {
+            clubService.removeSocial(clubId, body);
+        }
+
         clubService.addSocials(body.getSocialName(), body.getSocialLink(), clubId);
     }
 

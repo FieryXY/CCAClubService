@@ -1,14 +1,19 @@
 package com.codingoutreach.clubservice.service;
 
 
+import com.codingoutreach.clubservice.controllers.DO.SocialCreationRequest;
+import com.codingoutreach.clubservice.dos.FeaturedClubInformationDO;
 import com.codingoutreach.clubservice.models.SocialCredentials;
 import com.codingoutreach.clubservice.repository.DTO.Category;
+import com.codingoutreach.clubservice.repository.DTO.FeaturedClubInformation;
 import com.codingoutreach.clubservice.security.JWTUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.*;
+
 import com.codingoutreach.clubservice.dos.ClubInformation;
 import com.codingoutreach.clubservice.dos.ClubSocialDO;
 import com.codingoutreach.clubservice.repository.ClubRepository;
@@ -18,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,11 +51,28 @@ public class ClubService {
 
         List<ClubSocialDO> clubSocialDOs = clubSocials.stream().map(clubSocial -> new ClubSocialDO(clubSocial.getClubSocialId(), clubSocial.getSocialName(), clubSocial.getSocialLink())).collect(Collectors.toList());
 
+        String base64Image = null;
+
+        if(club.getProfilePictureUrl() != null) {
+            String path = "./src/main/resources/static/" + club.getProfilePictureUrl();
+            //Read file from path as base64
+            byte[] imageBytes = null;
+            try {
+                imageBytes = Files.readAllBytes(java.nio.file.Paths.get(path));
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+                String imageType = "image/" + club.getProfilePictureUrl().split("\\.")[1];
+                base64Image = "data:" + imageType + ";base64," + base64Image;
+            } catch (IOException e) {
+                System.out.println("Profile Picture Image Not Found");
+            }
+        }
+
         return new ClubInformation(
                 club.getClubID(),
                 club.getName(),
                 club.getDescription(),
-                club.getProfilePictureUrl(),
+                base64Image,
                 clubSocialDOs,
                 categories
         );
@@ -109,8 +130,18 @@ public class ClubService {
         return clubRepository.getAllClubs();
     }
 
-    public void removeSocial(SocialCredentials social) {
-        clubRepository.removeSocial(social.getSocialId());
+    public void removeSocial(UUID clubId, SocialCreationRequest social) {
+        clubRepository.removeSocial(clubId, social.getSocialName());
+    }
+
+    public List<FeaturedClubInformationDO> getFeaturedClubs() {
+        List<FeaturedClubInformation> repoList = clubRepository.getFeaturedClubs();
+        List<FeaturedClubInformationDO> toReturn = new ArrayList<FeaturedClubInformationDO>();
+        for(FeaturedClubInformation info : repoList) {
+            String clubName = clubRepository.getClubByClubId(info.getClubId()).getName();
+            toReturn.add(new FeaturedClubInformationDO(info.getClubId(), clubName, info.getDescription(), info.getMediaURL()));
+        }
+        return toReturn;
     }
 
     public void resetPassword(UUID clubId, String password) {
