@@ -112,4 +112,18 @@ public class ClubService {
     public void removeSocial(SocialCredentials social) {
         clubRepository.removeSocial(social.getSocialId());
     }
+
+    public void resetPassword(UUID clubId, String password) {
+        clubRepository.resetPassword(clubId, password);
+    }
+
+    public boolean checkEmail(String email) {
+        List<Club> clubs = clubRepository.checkEmail(email);
+        if (clubs.size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

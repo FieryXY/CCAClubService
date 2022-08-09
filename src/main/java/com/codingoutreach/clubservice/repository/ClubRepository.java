@@ -62,6 +62,11 @@ public class ClubRepository {
 
     private final String SOCIAL_EXISTS = "SELECT * FROM socials WHERE club_id=? AND social_name=?";
 
+    private final String RESET_PASSWORD = "UPDATE club " +
+                                          "SET password=? WHERE club_id=?";
+
+    private final String VALID_EMAIL = "SELECT 1 FROM club WHERE email=?";
+
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -209,6 +214,14 @@ public class ClubRepository {
             return null;
         }
         return temp.get(0).getClubSocialId();
+    }
+
+    public void resetPassword(UUID clubId, String password) {
+        jdbcTemplate.update(RESET_PASSWORD, password, clubId);
+    }
+
+    public List<Club> checkEmail(String email) {
+        return jdbcTemplate.query(VALID_EMAIL, new Object[] {email}, mapClub());
     }
 }
 

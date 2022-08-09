@@ -1,17 +1,18 @@
 package com.codingoutreach.clubservice.controllers;
 
 import com.codingoutreach.clubservice.controllers.DO.SocialCreationRequest;
-import com.codingoutreach.clubservice.models.Description;
-import com.codingoutreach.clubservice.models.SocialCredentials;
-import com.codingoutreach.clubservice.models.Tags;
-import com.codingoutreach.clubservice.models.Title;
+import com.codingoutreach.clubservice.models.*;
 import com.codingoutreach.clubservice.repository.DTO.Club;
 import com.codingoutreach.clubservice.dos.ClubInformation;
 import com.codingoutreach.clubservice.security.JWTUtil;
 import com.codingoutreach.clubservice.service.ClubService;
+import javassist.NotFoundException;
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -154,6 +155,33 @@ public class ClubController {
         return usernames;
     }
 
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
+    @CrossOrigin
+    @PostMapping
+    @RequestMapping(path="/password/reset/email")
+    public void resetPasswordEmail(@RequestBody Email body) throws MessagingException{
+        if (clubService.checkEmail(body.getEmail())) {
+            throw new IllegalArgumentException("Email Not Found");
+        } else {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            String htmlMsg = body.getText();
+            helper.setText(htmlMsg, true);
+            helper.setFrom("coding.outreach@gmail.com");
+            helper.setTo(body.getEmail());
+            helper.setSubject(body.getSubject());
+            javaMailSender.send(mimeMessage);
+        }
+    }
+    @CrossOrigin
+    @PostMapping
+    @RequestMapping(path="/password/reset/{clubId}")
+    public void resetPassword(@PathVariable("clubId") UUID clubId, String password) {
+        clubService.resetPassword(clubId, password);
+    }
 
     /**
      * @param clubId ID of Club
