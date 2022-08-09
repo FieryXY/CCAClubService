@@ -175,27 +175,9 @@ public class ClubController {
 
     @CrossOrigin
     @PostMapping
-    @RequestMapping(path="/password/reset/email")
-    public void resetPasswordEmail(@RequestBody Email body) throws MessagingException{
-        if (!clubService.checkEmail(body.getEmail())) {
-            throw new IllegalArgumentException("Email Not Found");
-        } else {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            String htmlMsg = body.getText();
-            helper.setText(htmlMsg, true);
-            helper.setFrom("coding.outreach@gmail.com");
-            helper.setTo(body.getEmail());
-            helper.setSubject(body.getSubject());
-            javaMailSender.send(mimeMessage);
-        }
-    }
-
-    @CrossOrigin
-    @PostMapping
-    @RequestMapping(path="/password/reset/request/{clubId}")
-    public void resetPasswordCreate(@PathVariable("clubId") UUID clubId) {
-        clubService.resetPasswordCreate(clubId);
+    @RequestMapping(path="/password/reset/request/")
+    public void resetPasswordCreate(@RequestBody Email body) {
+        clubService.resetPasswordCreate(body.getUsername());
 
     }
 

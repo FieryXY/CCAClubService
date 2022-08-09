@@ -8,7 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class Email {
-    private String email;
-    private String subject;
-    private String text;
+    private String username;
 }

@@ -158,18 +158,13 @@ public class ClubService {
         clubRepository.resetPassword(clubId, password);
     }
 
-    public boolean checkEmail(String email) {
-        List<Club> clubs = clubRepository.checkEmail(email);
-        if (clubs.size() == 0) {
-            return false;
-        } else {
-            return true;
+
+
+    public void resetPasswordCreate(String username) {
+        List<Club> club = clubRepository.checkUsername(username);
+        if (club.size() == 0) {
+            throw new IllegalArgumentException("Username Not Found");
         }
-    }
-
-    public void resetPasswordCreate(UUID clubId) {
-        Club club = clubRepository.getClubByClubId(clubId);
-
         //Generate random 6 digit number code
         Random rand = new Random();
         String randCode = "";
@@ -178,7 +173,7 @@ public class ClubService {
         }
 
         try {
-            sendEmail(new Email(club.getEmail(), "Password Reset", "Your password reset email is: " + ClubApplication.WEBSITE_RESET_PASSWORD_URL + randCode));
+            sendEmail(club.get(0).getEmail(), "Password Reset for " + club.get(0).getName(), "Your password reset link is: " + ClubApplication.WEBSITE_RESET_PASSWORD_URL + randCode);
         } catch (MessagingException e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Email could not be sent"
@@ -208,14 +203,13 @@ public class ClubService {
         }
     }
 
-    public void sendEmail(Email email) throws MessagingException {
+    public void sendEmail(String email, String subject, String text) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        String htmlMsg = email.getText();
-        helper.setText(htmlMsg, true);
+        helper.setText(text, true);
         helper.setFrom("coding.outreach@gmail.com");
-        helper.setTo(email.getEmail());
-        helper.setSubject(email.getSubject());
+        helper.setTo(email);
+        helper.setSubject(subject);
         javaMailSender.send(mimeMessage);
     }
 }

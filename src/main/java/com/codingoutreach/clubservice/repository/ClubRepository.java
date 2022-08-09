@@ -62,7 +62,7 @@ public class ClubRepository {
     private final String RESET_PASSWORD = "UPDATE club " +
                                           "SET password=? WHERE club_id=?";
 
-    private final String VALID_EMAIL = "SELECT 1 FROM club WHERE email=?";
+    private final String VALID_USERNAME = "SELECT * FROM club WHERE username=?";
     private final String GET_FEATURED_CLUBS = "SELECT * FROM featured_clubs";
 
     private final String INSERT_RESET_PASSWORD = "INSERT INTO reset_password_requests VALUES (?, ?, ?, ?)";
@@ -242,8 +242,8 @@ public class ClubRepository {
         jdbcTemplate.update(RESET_PASSWORD, password, clubId);
     }
 
-    public List<Club> checkEmail(String email) {
-        return jdbcTemplate.query(VALID_EMAIL, new Object[]{email}, mapClub());
+    public List<Club> checkUsername(String username) {
+        return jdbcTemplate.query(VALID_USERNAME, new Object[]{username}, mapClub());
     }
     public List<FeaturedClubInformation> getFeaturedClubs() {
         return jdbcTemplate.query(GET_FEATURED_CLUBS, mapFeaturedClubs());
