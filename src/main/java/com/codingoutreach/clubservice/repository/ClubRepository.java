@@ -228,7 +228,8 @@ public class ClubRepository {
     }
 
     public List<Club> checkEmail(String email) {
-        return jdbcTemplate.query(VALID_EMAIL, new Object[] {email}, mapClub());
+        return jdbcTemplate.query(VALID_EMAIL, new Object[]{email}, mapClub());
+    }
     public List<FeaturedClubInformation> getFeaturedClubs() {
         return jdbcTemplate.query(GET_FEATURED_CLUBS, mapFeaturedClubs());
     }

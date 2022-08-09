@@ -2,10 +2,7 @@ package com.codingoutreach.clubservice.controllers;
 
 import com.codingoutreach.clubservice.controllers.DO.SocialCreationRequest;
 import com.codingoutreach.clubservice.dos.FeaturedClubInformationDO;
-import com.codingoutreach.clubservice.models.Description;
-import com.codingoutreach.clubservice.models.SocialCredentials;
-import com.codingoutreach.clubservice.models.Tags;
-import com.codingoutreach.clubservice.models.Title;
+import com.codingoutreach.clubservice.models.*;
 import com.codingoutreach.clubservice.repository.DTO.Club;
 import com.codingoutreach.clubservice.dos.ClubInformation;
 import com.codingoutreach.clubservice.security.JWTUtil;
