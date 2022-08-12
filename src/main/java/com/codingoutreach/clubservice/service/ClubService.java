@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.*;
 
 import com.codingoutreach.clubservice.dos.ClubInformation;
@@ -173,6 +174,7 @@ public class ClubService {
         }
 
         try {
+            clubRepository.createResetPasswordRequest(club.get(0).getClubID(), randCode);
             sendEmail(club.get(0).getEmail(), "Password Reset for " + club.get(0).getName(), "Your password reset link is: " + ClubApplication.WEBSITE_RESET_PASSWORD_URL + randCode);
             clubRepository.insertResetPasswordRequest(club.get(0).getClubID(), randCode);
         } catch (MessagingException e) {
@@ -182,6 +184,7 @@ public class ClubService {
         }
 
     }
+
 
     public UUID verifyPasswordCode(PasswordCodeVerificationRequest request) {
         List<ResetPasswordCreationRequest> passwordRequests = clubRepository.getResetPasswordRequests(request.getResetCode());
@@ -198,8 +201,38 @@ public class ClubService {
             clubRepository.resetPassword(clubId, request.getNewPassword());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Code");
+
+    // public boolean verifyPasswordCode(PasswordCodeVerificationRequest request) {
+    //     return getPasswordCode(request) != null;
+    // }
+
+    public ResetPasswordCreationRequest getPasswordCode(PasswordCodeVerificationRequest request) {
+        List<ResetPasswordCreationRequest> passwordRequests = clubRepository.getResetPasswordRequests(request.getClubId());
+        for(ResetPasswordCreationRequest r : passwordRequests) {
+            if(r.getResetCode().equals(request.getResetCode())) {
+                if(r.getExpirationDate().isAfter(Instant.now())) {
+                    clubRepository.deleteResetPasswordCode(r.getRequestId());
+                    return null;
+                }
+                return r;
+            }
         }
+        return null;
     }
+
+    // public void resetPassword(ResetPasswordRequest request) {
+    //     PasswordCodeVerificationRequest verificationRequest = new PasswordCodeVerificationRequest(request.getClubId(), request.getResetCode());
+    //     ResetPasswordCreationRequest passwordRequest = getPasswordCode(verificationRequest);
+    //     if(passwordRequest != null) {
+    //         clubRepository.resetPassword(request.getClubId(), request.getNewPassword());
+    //         clubRepository.deleteResetPasswordCode(passwordRequest.getRequestId());
+    //     }
+    //     else {
+    //         throw new ResponseStatusException(
+    //                 HttpStatus.BAD_REQUEST, "Invalid reset code"
+    //         );
+    //     }
+    // }
 
     public void sendEmail(String email, String subject, String text) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
