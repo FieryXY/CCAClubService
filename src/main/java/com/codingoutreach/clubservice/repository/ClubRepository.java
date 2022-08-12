@@ -69,6 +69,10 @@ public class ClubRepository {
 
     private final String GET_RESET_PASSWORD_BY_CLUB_ID = "SELECT * FROM reset_password_requests WHERE club_id=?";
 
+    private final String DELETE_RESET_PASSWORD_BY_REQUEST_ID = "DELETE FROM reset_password_requests WHERE request_id=?";
+
+    private final String GET_ALL_RESET_PASSWORD_REQUESTS = "SELECT * FROM reset_password_requests";
+
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -266,6 +270,14 @@ public class ClubRepository {
     //Get Reset Password Request
     public List<ResetPasswordCreationRequest> getResetPasswordRequests(UUID clubId) {
         return jdbcTemplate.query(GET_RESET_PASSWORD_BY_CLUB_ID, new Object[]{clubId}, mapResetPasswordRequest());
+    }
+
+    public int deleteResetPasswordCode(UUID requestId) {
+        return jdbcTemplate.update(DELETE_RESET_PASSWORD_BY_REQUEST_ID, requestId);
+    }
+
+    public List<ResetPasswordCreationRequest> getAllResetPasswordRequests() {
+        return jdbcTemplate.query(GET_ALL_RESET_PASSWORD_REQUESTS, mapResetPasswordRequest());
     }
 
 
