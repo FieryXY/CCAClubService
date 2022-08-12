@@ -201,38 +201,40 @@ public class ClubService {
             clubRepository.resetPassword(clubId, request.getNewPassword());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Code");
+        }
+    }
 
     // public boolean verifyPasswordCode(PasswordCodeVerificationRequest request) {
     //     return getPasswordCode(request) != null;
     // }
 
-    public ResetPasswordCreationRequest getPasswordCode(PasswordCodeVerificationRequest request) {
-        List<ResetPasswordCreationRequest> passwordRequests = clubRepository.getResetPasswordRequests(request.getClubId());
-        for(ResetPasswordCreationRequest r : passwordRequests) {
-            if(r.getResetCode().equals(request.getResetCode())) {
-                if(r.getExpirationDate().isAfter(Instant.now())) {
-                    clubRepository.deleteResetPasswordCode(r.getRequestId());
-                    return null;
-                }
-                return r;
-            }
-        }
-        return null;
-    }
+//    public ResetPasswordCreationRequest getPasswordCode(PasswordCodeVerificationRequest request) {
+//        List<ResetPasswordCreationRequest> passwordRequests = clubRepository.getResetPasswordRequests(request.getClubId());
+//        for(ResetPasswordCreationRequest r : passwordRequests) {
+//            if(r.getResetCode().equals(request.getResetCode())) {
+//                if(r.getExpirationDate().isAfter(Instant.now())) {
+//                    clubRepository.deleteResetPasswordCode(r.getRequestId());
+//                    return null;
+//                }
+//                return r;
+//            }
+//        }
+//        return null;
+//    }
 
-    // public void resetPassword(ResetPasswordRequest request) {
-    //     PasswordCodeVerificationRequest verificationRequest = new PasswordCodeVerificationRequest(request.getClubId(), request.getResetCode());
-    //     ResetPasswordCreationRequest passwordRequest = getPasswordCode(verificationRequest);
-    //     if(passwordRequest != null) {
-    //         clubRepository.resetPassword(request.getClubId(), request.getNewPassword());
-    //         clubRepository.deleteResetPasswordCode(passwordRequest.getRequestId());
-    //     }
-    //     else {
-    //         throw new ResponseStatusException(
-    //                 HttpStatus.BAD_REQUEST, "Invalid reset code"
-    //         );
-    //     }
-    // }
+//     public void resetPassword(ResetPasswordRequest request) {
+//         PasswordCodeVerificationRequest verificationRequest = new PasswordCodeVerificationRequest(request.getClubId(), request.getResetCode());
+//         ResetPasswordCreationRequest passwordRequest = getPasswordCode(verificationRequest);
+//         if(passwordRequest != null) {
+//             clubRepository.resetPassword(request.getClubId(), request.getNewPassword());
+//             clubRepository.deleteResetPasswordCode(passwordRequest.getRequestId());
+//         }
+//         else {
+//             throw new ResponseStatusException(
+//                     HttpStatus.BAD_REQUEST, "Invalid reset code"
+//             );
+//         }
+//     }
 
     public void sendEmail(String email, String subject, String text) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
