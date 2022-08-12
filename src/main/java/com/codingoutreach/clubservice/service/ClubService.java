@@ -174,6 +174,7 @@ public class ClubService {
         }
 
         try {
+            clubRepository.createResetPasswordRequest(club.get(0).getClubID(), randCode);
             sendEmail(club.get(0).getEmail(), "Password Reset for " + club.get(0).getName(), "Your password reset link is: " + ClubApplication.WEBSITE_RESET_PASSWORD_URL + randCode);
         } catch (MessagingException e) {
             throw new ResponseStatusException(

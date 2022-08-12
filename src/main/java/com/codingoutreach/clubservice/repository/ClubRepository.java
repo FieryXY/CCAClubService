@@ -67,6 +67,8 @@ public class ClubRepository {
 
     private final String INSERT_RESET_PASSWORD = "INSERT INTO reset_password_requests VALUES (?, ?, ?, ?)";
 
+    private final String INSERT_RESET_PASSWORD_REQUEST = "INSERT INTO reset_password_requests VALUES (?, ?, ?, ?)";
+
     private final String GET_RESET_PASSWORD_BY_CLUB_ID = "SELECT * FROM reset_password_requests WHERE club_id=?";
 
     private final String DELETE_RESET_PASSWORD_BY_REQUEST_ID = "DELETE FROM reset_password_requests WHERE request_id=?";
@@ -278,6 +280,16 @@ public class ClubRepository {
 
     public List<ResetPasswordCreationRequest> getAllResetPasswordRequests() {
         return jdbcTemplate.query(GET_ALL_RESET_PASSWORD_REQUESTS, mapResetPasswordRequest());
+    }
+
+    public int createResetPasswordRequest(UUID clubId, String resetCode) {
+        Instant expirationInstant = Instant.now().plus(ClubApplication.SECONDS_UNTIL_PASSWORD_REQUEST_EXPIRATION,
+                ChronoUnit.SECONDS);
+
+        //Expiration Instant to Timestamp
+        Timestamp expirationTimestamp = Timestamp.from(expirationInstant);
+        return jdbcTemplate.update(INSERT_RESET_PASSWORD, UUID.randomUUID(), clubId, resetCode,
+                expirationTimestamp);
     }
 
 

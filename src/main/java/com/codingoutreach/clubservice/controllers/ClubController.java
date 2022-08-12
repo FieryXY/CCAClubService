@@ -178,7 +178,6 @@ public class ClubController {
     @RequestMapping(path="/password/reset/request/")
     public void resetPasswordCreate(@RequestBody Email body) {
         clubService.resetPasswordCreate(body.getUsername());
-
     }
 
     @CrossOrigin
