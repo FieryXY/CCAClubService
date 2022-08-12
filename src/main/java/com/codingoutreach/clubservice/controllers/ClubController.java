@@ -175,23 +175,23 @@ public class ClubController {
 
     @CrossOrigin
     @PostMapping
-    @RequestMapping(path="/password/reset/request/")
+    @RequestMapping(path="/password/reset/request")
     public void resetPasswordCreate(@RequestBody Email body) {
         clubService.resetPasswordCreate(body.getUsername());
 
     }
 
     @CrossOrigin
-    @PostMapping
-    @RequestMapping(path="/password/reset/verify/{clubId}")
-    public void resetPasswordVerify(@PathVariable("clubId") UUID clubId, @RequestBody PasswordCodeVerificationRequest request) {
-        clubService.verifyPasswordCode(request);
+    @GetMapping
+    @RequestMapping(path="/password/reset/verify")
+    public UUID resetPasswordVerify(@RequestBody PasswordCodeVerificationRequest request) {
+        return clubService.verifyPasswordCode(request);
     }
 
     @CrossOrigin
     @PostMapping
-    @RequestMapping(path="/password/reset/{clubId}")
-    public void resetPassword(@PathVariable("clubId") UUID clubId, @RequestBody ResetPasswordRequest request) {
+    @RequestMapping(path="/password/reset")
+    public void resetPassword(@RequestBody ResetPasswordRequest request) {
         clubService.resetPassword(request);
     }
 

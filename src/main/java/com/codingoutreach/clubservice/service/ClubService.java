@@ -174,32 +174,30 @@ public class ClubService {
 
         try {
             sendEmail(club.get(0).getEmail(), "Password Reset for " + club.get(0).getName(), "Your password reset link is: " + ClubApplication.WEBSITE_RESET_PASSWORD_URL + randCode);
+            clubRepository.insertResetPasswordRequest(club.get(0).getClubID(), randCode);
         } catch (MessagingException e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Email could not be sent"
             );
         }
+
     }
 
-    public boolean verifyPasswordCode(PasswordCodeVerificationRequest request) {
-        List<ResetPasswordCreationRequest> passwordRequests = clubRepository.getResetPasswordRequests(request.getClubId());
-        for(ResetPasswordCreationRequest r : passwordRequests) {
-            if(r.getResetCode().equals(request.getResetCode())) {
-                return true;
-            }
+    public UUID verifyPasswordCode(PasswordCodeVerificationRequest request) {
+        List<ResetPasswordCreationRequest> passwordRequests = clubRepository.getResetPasswordRequests(request.getResetCode());
+        if (passwordRequests.size() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Code");
         }
-        return false;
+        return passwordRequests.get(0).getClubId();
     }
 
     public void resetPassword(ResetPasswordRequest request) {
-        PasswordCodeVerificationRequest verificationRequest = new PasswordCodeVerificationRequest(request.getClubId(), request.getResetCode());
-        if(verifyPasswordCode(verificationRequest)) {
-            clubRepository.resetPassword(request.getClubId(), request.getNewPassword());
-        }
-        else {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Invalid reset code"
-            );
+        PasswordCodeVerificationRequest verificationRequest = new PasswordCodeVerificationRequest(request.getResetCode());
+        try {
+            UUID clubId = verifyPasswordCode(verificationRequest);
+            clubRepository.resetPassword(clubId, request.getNewPassword());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Code");
         }
     }
 

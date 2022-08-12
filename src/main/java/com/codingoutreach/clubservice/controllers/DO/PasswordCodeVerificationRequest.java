@@ -1,13 +1,14 @@
 package com.codingoutreach.clubservice.controllers.DO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class PasswordCodeVerificationRequest {
-    private UUID clubId;
     private String resetCode;
 }

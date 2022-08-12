@@ -5,6 +5,7 @@ import com.codingoutreach.clubservice.repository.ClubRepository;
 import com.codingoutreach.clubservice.repository.DTO.Club;
 import com.codingoutreach.clubservice.repository.DTO.ClubUser;
 import com.codingoutreach.clubservice.security.JWTUtil;
+import com.codingoutreach.clubservice.service.ClubService;
 import com.codingoutreach.clubservice.service.ClubUserService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +31,16 @@ public class AuthController {
     @Autowired private ClubUserService clubUserService;
     @Autowired private JWTUtil jwtUtil;
     @Autowired private AuthenticationManager authManager;
+    @Autowired private ClubService clubService;
     @CrossOrigin
     @PostMapping("/register")
-    public Map<String, Object> registerHandler(@RequestBody ClubCreationRequest user){
+    public Map<String, Object> registerHandler(@RequestBody ClubCreationRequest user) throws MessagingException {
         Club userClub = clubUserService.signUpUser(user);
+        String text = "Hi " + user.getName() + ", <br><br> Thank you for registering to be a CCA club! Below are your credentials to log in to our club website (insert link here): <br><br> Username: " + user.getUsername() + "<br> Password: " + user.getPassword() + "<br><br> Thanks!,<br> CCA ASB";
+        clubService.sendEmail(user.getEmail(), "CCA ASB Club Sign-Up", text);
         String token = jwtUtil.generateToken(userClub.getUsername());
         return Collections.singletonMap("jwt-token", token);
+
     }
 
     @CrossOrigin

@@ -7,6 +7,7 @@ import com.codingoutreach.clubservice.repository.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.codingoutreach.clubservice.repository.DTO.Club;
@@ -14,6 +15,9 @@ import com.codingoutreach.clubservice.repository.DTO.Club;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -60,20 +64,23 @@ public class ClubRepository {
     private final String SOCIAL_EXISTS = "SELECT * FROM socials WHERE club_id=? AND social_name=?";
 
     private final String RESET_PASSWORD = "UPDATE club " +
-                                          "SET password=? WHERE club_id=?";
+                                          "SET encoded_password=? WHERE club_id=?";
 
     private final String VALID_USERNAME = "SELECT * FROM club WHERE username=?";
     private final String GET_FEATURED_CLUBS = "SELECT * FROM featured_clubs";
 
     private final String INSERT_RESET_PASSWORD = "INSERT INTO reset_password_requests VALUES (?, ?, ?, ?)";
 
-    private final String GET_RESET_PASSWORD_BY_CLUB_ID = "SELECT * FROM reset_password_requests WHERE club_id=?";
+    private final String GET_RESET_PASSWORD_BY_CODE = "SELECT * FROM reset_password_requests WHERE reset_code=?";
 
     private final JdbcTemplate jdbcTemplate;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    public ClubRepository(JdbcTemplate jdbcTemplate) {
+    public ClubRepository(JdbcTemplate jdbcTemplate, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.jdbcTemplate = jdbcTemplate;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     //Row Mappers
@@ -152,7 +159,9 @@ public class ClubRepository {
             UUID requestId = UUID.fromString(resultSet.getString("request_id"));
             UUID clubId = UUID.fromString(resultSet.getString("club_id"));
             String resetCode = resultSet.getString("reset_code");
-            Instant expirationDate = Instant.parse(resultSet.getString("expiration_date"));
+            String expiration = resultSet.getString("expiration_date");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            Instant expirationDate = LocalDateTime.parse(expiration.substring(0, expiration.length() - 7), formatter).atZone(ZoneId.of("UTC")).toInstant();
             return new ResetPasswordCreationRequest(requestId, clubId, resetCode, expirationDate);
         });
     }
@@ -239,7 +248,8 @@ public class ClubRepository {
     }
 
     public void resetPassword(UUID clubId, String password) {
-        jdbcTemplate.update(RESET_PASSWORD, password, clubId);
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+        jdbcTemplate.update(RESET_PASSWORD, encodedPassword, clubId);
     }
 
     public List<Club> checkUsername(String username) {
@@ -264,8 +274,8 @@ public class ClubRepository {
     }
 
     //Get Reset Password Request
-    public List<ResetPasswordCreationRequest> getResetPasswordRequests(UUID clubId) {
-        return jdbcTemplate.query(GET_RESET_PASSWORD_BY_CLUB_ID, new Object[]{clubId}, mapResetPasswordRequest());
+    public List<ResetPasswordCreationRequest> getResetPasswordRequests(String resetCode) {
+        return jdbcTemplate.query(GET_RESET_PASSWORD_BY_CODE, new Object[]{resetCode}, mapResetPasswordRequest());
     }
 
 
