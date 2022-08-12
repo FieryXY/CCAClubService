@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS club (
     name VARCHAR(200) NOT NULL,
     description VARCHAR(500),
     meet_time VARCHAR(500),
-    profile_picture_url VARCHAR(200)
+    profile_picture_url VARCHAR(200),
+    refresh_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Social Media Links (Club Instagram, Discord, Classroom, etc. links) --

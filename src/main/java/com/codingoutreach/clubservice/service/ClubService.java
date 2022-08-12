@@ -224,4 +224,12 @@ public class ClubService {
         helper.setSubject(subject);
         javaMailSender.send(mimeMessage);
     }
+
+    public void refresh(UUID clubId) {
+        clubRepository.refresh(clubId);
+    }
+
+    public void deleteUnrefreshedClubs(Instant earliestRefreshDate) {
+        clubRepository.deleteUnrefreshedClubs(earliestRefreshDate);
+    }
 }

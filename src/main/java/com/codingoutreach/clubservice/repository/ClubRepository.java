@@ -75,6 +75,11 @@ public class ClubRepository {
 
     private final String GET_ALL_RESET_PASSWORD_REQUESTS = "SELECT * FROM reset_password_requests";
 
+    private final String REFRESH_CLUB = "UPDATE club " +
+                                       "SET last_refreshed=? WHERE club_id=?";
+
+    private final String DELETE_UNREFRESHED_CLUBS = "DELETE FROM club WHERE last_refreshed < ?";
+
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -293,7 +298,12 @@ public class ClubRepository {
     }
 
 
+    public void refresh(UUID clubId) {
+        jdbcTemplate.update(REFRESH_CLUB, Timestamp.from(Instant.now()), clubId);
+    }
 
-
+    public void deleteUnrefreshedClubs(Instant earliestRefreshDate) {
+        jdbcTemplate.update(DELETE_UNREFRESHED_CLUBS, Timestamp.from(earliestRefreshDate));
+    }
 }
 

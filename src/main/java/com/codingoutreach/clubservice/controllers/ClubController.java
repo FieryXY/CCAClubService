@@ -205,4 +205,11 @@ public class ClubController {
     public ClubInformation getClubInformationByClubId(@PathVariable("clubId") UUID clubId) {
         return clubService.getClubInformationByClubId(clubId);
     }
+
+    @CrossOrigin
+    @PostMapping
+    @RequestMapping(path="/refresh/{clubId}")
+    public void refresh(@PathVariable("clubId") UUID clubId) {
+        clubService.refresh(clubId);
+    }
 }
