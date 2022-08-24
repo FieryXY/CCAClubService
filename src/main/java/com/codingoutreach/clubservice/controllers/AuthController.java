@@ -35,9 +35,9 @@ public class AuthController {
     @CrossOrigin
     @PostMapping("/register")
     public Map<String, Object> registerHandler(@RequestBody ClubCreationRequest user) throws MessagingException {
-        Club userClub = clubUserService.signUpUser(user);
         String text = "Hi " + user.getName() + ", <br><br> Thank you for registering to be a CCA club! Below are your credentials to log in to our club website (insert link here): <br><br> Username: " + user.getUsername() + "<br> Password: " + user.getPassword() + "<br><br> Thanks!,<br> CCA ASB";
         clubService.sendEmail(user.getEmail(), "CCA ASB Club Sign-Up", text);
+        Club userClub = clubUserService.signUpUser(user);
         String token = jwtUtil.generateToken(userClub.getUsername());
         return Collections.singletonMap("jwt-token", token);
 
