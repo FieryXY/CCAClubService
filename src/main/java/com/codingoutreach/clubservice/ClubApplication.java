@@ -10,6 +10,10 @@ import java.util.List;
 @RestController
 public class ClubApplication {
 
+    public static final String WEBSITE_BASE_URL = "http://localhost:3000";
+    public static final long SECONDS_UNTIL_PASSWORD_REQUEST_EXPIRATION = 60 * 60 * 24;
+    public static final String WEBSITE_RESET_PASSWORD_URL = WEBSITE_BASE_URL + "/#/reset-password/";
+
     public static void main(String[] args) {
         SpringApplication.run(ClubApplication.class, args);
     }

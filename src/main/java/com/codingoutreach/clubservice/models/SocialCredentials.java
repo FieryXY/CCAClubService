@@ -9,9 +9,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class LoginCredentials {
-
-    private String username;
-    private String password;
-
+public class SocialCredentials {
+    private String socialName;
+    private String socialLink;
+    private UUID socialId;
 }

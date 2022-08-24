@@ -26,33 +26,33 @@ public class ClubUserService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        List<ClubUser> club = clubRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        List<ClubUser> club = clubRepository.findByUsername(username);
         if (club.size() == 0) {
-            throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email));
+            throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username));
         } else if (club.size() != 1) {
-            throw new UsernameNotFoundException(String.format(TOO_MANY_USERS_MSG, email));
+            throw new UsernameNotFoundException(String.format(TOO_MANY_USERS_MSG, username));
         }
 
         return club.get(0);
     }
 
     public Club signUpUser(ClubCreationRequest clubCreationRequest) {
-        boolean isValidEmail = emailService.test(clubCreationRequest.getEmail()); // So far only returns true
+        boolean isValidEmail = emailService.test(clubCreationRequest.getUsername()); // So far only returns true
         if (!isValidEmail) {
-            throw new IllegalStateException("Email not valid");
+            throw new IllegalStateException("Username not valid");
         }
-        boolean userExists = (clubRepository.findByEmail(clubCreationRequest.getEmail()).size() != 0);
+        boolean userExists = (clubRepository.findByUsername(clubCreationRequest.getUsername()).size() != 0);
 
         if (userExists) {
-            throw new IllegalStateException("Email already taken");
+            throw new IllegalStateException("Username already taken");
         }
 
         String encodedPassword = bCryptPasswordEncoder.encode(clubCreationRequest.getPassword());
 
         UUID club_id = UUID.randomUUID();
 
-        Club clubNew = new Club(club_id, clubCreationRequest.getEmail(), encodedPassword, clubCreationRequest.getName(),
+        Club clubNew = new Club(club_id, clubCreationRequest.getUsername(), clubCreationRequest.getEmail(), encodedPassword, clubCreationRequest.getName(),
                                 clubCreationRequest.getDescription(), clubCreationRequest.getMeet_time(), "templink");
 
         clubRepository.createNewClub(clubNew);

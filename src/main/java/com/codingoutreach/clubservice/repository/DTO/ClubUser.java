@@ -26,7 +26,7 @@ public class ClubUser implements UserDetails {
     private final UUID clubid;
 
     @NotBlank
-    private String email;
+    private String username;
 
     @NotBlank
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -46,7 +46,7 @@ public class ClubUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override

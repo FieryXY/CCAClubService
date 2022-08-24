@@ -16,57 +16,64 @@
     <description>Web Server for CCA Club Portal Web Application</description>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.9.1</version>
+<!--            <plugin>-->
+<!--                <groupId>com.github.eirslett</groupId>-->
+<!--                <artifactId>frontend-maven-plugin</artifactId>-->
+<!--                <version>1.12.1</version>-->
 
-                <executions>
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v14.16.0</nodeVersion>
-                            <npmVersion>6.14.11</npmVersion>
-                        </configuration>
-                    </execution>
-                        <execution>
-                            <id>npm install</id>
-                            <goals>
-                                <goal>npm</goal>
-                            </goals>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>install node and npm</id>-->
+<!--                        <goals>-->
+<!--                            <goal>install-node-and-npm</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <nodeVersion>v14.16.0</nodeVersion>-->
+<!--                            <npmVersion>6.14.11</npmVersion>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                        <execution>-->
+<!--                            <id>npm install</id>-->
+<!--                            <goals>-->
+<!--                                <goal>npm</goal>-->
+<!--                            </goals>-->
 
-                            <!-- optional: default phase is "generate-resources" -->
-                            <phase>generate-resources</phase>
+<!--                            &lt;!&ndash; optional: default phase is "generate-resources" &ndash;&gt;-->
+<!--                            <phase>generate-resources</phase>-->
 
-                            <configuration>
-                                <!-- optional: The default argument is actually
-                                "install", so unless you need to run some other npm command,
-                                you can remove this whole <configuration> section.
-                                -->
-                                <arguments>install</arguments>
-                            </configuration>
-                        </execution>
-                    <execution>
-                        <id>webpack build</id>
-                        <goals>
-                            <goal>webpack</goal>
-                        </goals>
+<!--                            <configuration>-->
+<!--                                &lt;!&ndash; optional: The default argument is actually-->
+<!--                                "install", so unless you need to run some other npm command,-->
+<!--                                you can remove this whole <configuration> section.-->
+<!--                                &ndash;&gt;-->
+<!--                                <arguments>install</arguments>-->
+<!--                            </configuration>-->
+<!--                        </execution>-->
+<!--                    <execution>-->
+<!--                        <id>webpack build</id>-->
+<!--                        <goals>-->
+<!--                            <goal>webpack</goal>-->
+<!--                        </goals>-->
 
-                        <!-- optional: the default phase is "generate-resources" -->
-                        <phase>generate-resources</phase>
+<!--                        &lt;!&ndash; optional: the default phase is "generate-resources" &ndash;&gt;-->
+<!--                        <phase>generate-resources</phase>-->
 
-                        <configuration>
-                            <!-- optional: if not specified, it will run webpack's default
-                            build (and you can remove this whole <configuration> section.) -->
-                            <arguments>-p</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--                        <configuration>-->
+<!--                            &lt;!&ndash; optional: if not specified, it will run webpack's default-->
+<!--                            build (and you can remove this whole <configuration> section.) &ndash;&gt;-->
+<!--                            <arguments>-p</arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -84,6 +91,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -96,9 +104,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.2</version>
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>com.github.eirslett</groupId>

@@ -2,16 +2,11 @@ package com.codingoutreach.clubservice.models;
 
 import lombok.*;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class LoginCredentials {
-
+public class Email {
     private String username;
-    private String password;
-
 }

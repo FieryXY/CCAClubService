@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/club/edit**")
+                .antMatchers("/api/club/edit/**")
                 .authenticated()
                 .antMatchers("/**")
                     .permitAll()
@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
     }
-
+    // TODO: Figure out how to secure edit endpoint so that logging in on one account will not be able to edit other accounts' socials page etc
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

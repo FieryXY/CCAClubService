@@ -1,38 +1,39 @@
 package com.codingoutreach.clubservice.repository;
 
 
-import com.codingoutreach.clubservice.repository.DTO.Club;
-import com.codingoutreach.clubservice.repository.DTO.ClubUser;
+import com.codingoutreach.clubservice.ClubApplication;
+import com.codingoutreach.clubservice.controllers.DO.ResetPasswordCreationRequest;
+import com.codingoutreach.clubservice.repository.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-import com.codingoutreach.clubservice.repository.DTO.Category;
 import com.codingoutreach.clubservice.repository.DTO.Club;
-import com.codingoutreach.clubservice.repository.DTO.ClubCategory;
-import com.codingoutreach.clubservice.repository.DTO.ClubSocial;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 
-
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
 
 @Repository
 public class ClubRepository {
-    //SQL Queries
+    // SQL Queries
     private final String GET_ALL_CLUBS = "SELECT * FROM club";
 
-    private final String FIND_CLUB_USER_BY_EMAIL = "SELECT club_id, email, encoded_password FROM club WHERE email=?";
+    private final String FIND_CLUB_USER_BY_USERNAME = "SELECT club_id, username, encoded_password FROM club WHERE username=?";
 
-    private final String SAVE_CLUB = "INSERT INTO club VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private final String SAVE_CLUB = "INSERT INTO club VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private final String FIND_CLUB_USER_BY_ID = "SELECT club_id, email, encoded_password FROM club WHERE club_id=?";
-    
+    private final String FIND_CLUB_USER_BY_ID = "SELECT club_id, username, encoded_password FROM club WHERE club_id=?";
+
     private final String GET_CLUB_BY_ID_SQL = "SELECT * FROM club WHERE club_id=?";
     
     private final String GET_SOCIALS_BY_CLUB_ID_SQL = "SELECT * FROM socials WHERE club_id=?";
@@ -41,13 +42,136 @@ public class ClubRepository {
     
     private final String GET_ALL_CATEGORIES = "SELECT * FROM category";
 
+    private final String EDIT_SOCIALS = "UPDATE socials " +
+                                        "SET social_name=?, social_link=? WHERE social_id=?";
 
+    private final String ADD_SOCIALS = "INSERT INTO socials VALUES (?, ?, ?, ?)";
+
+    private final String EDIT_TITLE = "UPDATE club " +
+                                      "SET name=? WHERE club_id=?";
+
+    private final String EDIT_DESCRIPTION = "UPDATE club " +
+                                            "SET description=? WHERE club_id=?";
+
+    private final String ADD_TAGS = "INSERT INTO club_categories VALUES (?, ?, ?)";
+
+    private final String GET_TAG_ID = "SELECT * FROM category WHERE category_name=?";
+
+    private final String REMOVE_TAGS = "DELETE FROM club_categories WHERE club_id=? AND category_id=?";
+
+    private final String REMOVE_SOCIAL = "DELETE FROM socials WHERE club_id=? AND social_name=?";
+
+    private final String SOCIAL_EXISTS = "SELECT * FROM socials WHERE club_id=? AND social_name=?";
+
+    private final String RESET_PASSWORD = "UPDATE club " +
+                                          "SET encoded_password=? WHERE club_id=?";
+
+    private final String VALID_USERNAME = "SELECT * FROM club WHERE username=?";
+    private final String GET_FEATURED_CLUBS = "SELECT * FROM featured_clubs";
+
+    private final String INSERT_RESET_PASSWORD = "INSERT INTO reset_password_requests VALUES (?, ?, ?, ?)";
+
+    private final String GET_RESET_PASSWORD_BY_CODE = "SELECT * FROM reset_password_requests WHERE reset_code=?";
+
+    private final String INSERT_RESET_PASSWORD_REQUEST = "INSERT INTO reset_password_requests VALUES (?, ?, ?, ?)";
+
+    private final String GET_RESET_PASSWORD_BY_CLUB_ID = "SELECT * FROM reset_password_requests WHERE club_id=?";
+
+    private final String DELETE_RESET_PASSWORD_BY_REQUEST_ID = "DELETE FROM reset_password_requests WHERE request_id=?";
+
+    private final String GET_ALL_RESET_PASSWORD_REQUESTS = "SELECT * FROM reset_password_requests";
 
     private final JdbcTemplate jdbcTemplate;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    public ClubRepository(JdbcTemplate jdbcTemplate) {
+    public ClubRepository(JdbcTemplate jdbcTemplate, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.jdbcTemplate = jdbcTemplate;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+    //Row Mappers
+
+    public RowMapper<Category> mapCategory() {
+        return (resultSet, i) -> {
+            UUID categoryId = UUID.fromString(resultSet.getString("category_id"));
+            String categoryName = resultSet.getString("category_name");
+            return new Category(categoryId, categoryName);
+        };
+    }
+
+    public RowMapper<ClubCategory> mapClubCategory() {
+        return (resultSet, i) -> {
+            UUID clubCategoryId = UUID.fromString(resultSet.getString("id"));
+            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
+            UUID categoryId = UUID.fromString(resultSet.getString("category_id"));
+
+            return new ClubCategory(clubCategoryId, clubId, categoryId);
+        };
+    }
+
+    public RowMapper<ClubSocial> mapClubSocial() {
+        return (resultSet, i) -> {
+            UUID clubSocialId = UUID.fromString(resultSet.getString("social_id"));
+            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
+            String socialName = resultSet.getString("social_name");
+            String socialLink = resultSet.getString("social_link");
+
+            return new ClubSocial(clubSocialId, clubId, socialName, socialLink);
+        };
+    }
+
+
+
+
+    // Turns a column of data into Club object
+    // Turns a column of data into Club object
+    public RowMapper<Club> mapClub() {
+        return ((resultSet, i) -> {
+            UUID clubID = UUID.fromString(resultSet.getString("club_id"));
+            String username = resultSet.getString("username");
+            String email = resultSet.getString("email");
+            String encoded_password = resultSet.getString("encoded_password");
+            String name = resultSet.getString("name");
+            String description = resultSet.getString("description");
+            String profile_picture_url = resultSet.getString("profile_picture_url");
+            String meet_time = resultSet.getString("meet_time");
+            return new Club(clubID, username, email, encoded_password, name, description, meet_time, profile_picture_url);
+        });
+    }
+
+
+    // Login
+    public RowMapper<ClubUser> mapLogin() {
+        return ((resultSet, i) -> {
+            UUID clubID = UUID.fromString(resultSet.getString("club_id"));
+            String username = resultSet.getString("username");
+            String encoded_password = resultSet.getString("encoded_password");
+            return new ClubUser(clubID, username, encoded_password);
+        });
+    }
+
+    public RowMapper<FeaturedClubInformation> mapFeaturedClubs() {
+        return ((resultSet, i) -> {
+            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
+            String textContent = resultSet.getString("text_content");
+            String mediaURL = resultSet.getString("media_url");
+
+            return new FeaturedClubInformation(clubId, textContent, mediaURL);
+        });
+    }
+
+    public RowMapper<ResetPasswordCreationRequest> mapResetPasswordRequest() {
+        return ((resultSet, i) -> {
+            UUID requestId = UUID.fromString(resultSet.getString("request_id"));
+            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
+            String resetCode = resultSet.getString("reset_code");
+            String expiration = resultSet.getString("expiration_date");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            Instant expirationDate = LocalDateTime.parse(expiration.substring(0, expiration.length() - 7), formatter).atZone(ZoneId.of("UTC")).toInstant();
+            return new ResetPasswordCreationRequest(requestId, clubId, resetCode, expirationDate);
+        });
     }
 
 
@@ -55,16 +179,16 @@ public class ClubRepository {
         return jdbcTemplate.query(GET_ALL_CLUBS, mapClub());
     }
 
-    public List<ClubUser> findByEmail(String email) {
-        return jdbcTemplate.query(FIND_CLUB_USER_BY_EMAIL, new Object[] {email}, mapLogin());
+    public List<ClubUser> findByUsername(String username) {
+        return jdbcTemplate.query(FIND_CLUB_USER_BY_USERNAME, new Object[] {username}, mapLogin());
     }
 
-    public List<ClubUser> findClubById(UUID clubId) {
-        return jdbcTemplate.query(FIND_CLUB_USER_BY_ID, new Object[]{clubId}, mapLogin());
+    public ClubUser findClubUserByClubId(String clubId) {
+        return jdbcTemplate.queryForObject(FIND_CLUB_USER_BY_ID, new Object[]{clubId}, mapLogin());
     }
 
     public int createNewClub(Club club) {
-        return jdbcTemplate.update(SAVE_CLUB, club.getClubID(), club.getEmail(), club.getEncodedPassword(),
+        return jdbcTemplate.update(SAVE_CLUB, club.getClubID(), club.getUsername(), club.getEmail(), club.getEncodedPassword(),
                 club.getName(), club.getDescription(), club.getMeetTime(),
                 club.getProfilePictureUrl());
     }
@@ -84,66 +208,104 @@ public class ClubRepository {
     public List<Category> getAllCategories() {
         return jdbcTemplate.query(GET_ALL_CATEGORIES, mapCategory());
     }
-    
-    //Row Mappers
 
-    public RowMapper<Category> mapCategory() {
-        return (resultSet, i) -> {
-          UUID categoryId = UUID.fromString(resultSet.getString("category_id"));
-          String categoryName = resultSet.getString("category_name");
-          return new Category(categoryId, categoryName);
-        };
+    public void editSocials(String socialName, String socialLink, UUID socialId) {
+        jdbcTemplate.update(EDIT_SOCIALS, socialName, socialLink, socialId);
     }
 
-    public RowMapper<ClubCategory> mapClubCategory() {
-        return (resultSet, i) -> {
-            UUID clubCategoryId = UUID.fromString(resultSet.getString("id"));
-            UUID clubId = UUID.fromString(resultSet.getString("club_id"));
-            UUID categoryId = UUID.fromString(resultSet.getString("category_id"));
-
-            return new ClubCategory(clubCategoryId, clubId, categoryId);
-        };
+    public void addSocials(String socialName, String socialLink, UUID clubId) {
+        UUID socialId = UUID.randomUUID();
+        jdbcTemplate.update(ADD_SOCIALS, socialId, clubId, socialName, socialLink);
     }
 
-    public RowMapper<ClubSocial> mapClubSocial() {
-        return (resultSet, i) -> {
-          UUID clubSocialId = UUID.fromString(resultSet.getString("social_id"));
-          UUID clubId = UUID.fromString(resultSet.getString("club_id"));
-          String socialName = resultSet.getString("social_name");
-          String socialLink = resultSet.getString("social_link");
+    public void editTitle(String title, UUID clubId) {
+        jdbcTemplate.update(EDIT_TITLE, title, clubId);
+    }
 
-          return new ClubSocial(clubSocialId, clubId, socialName, socialLink);
-        };
+    public void editDescription(String description, UUID clubId) {
+        jdbcTemplate.update(EDIT_DESCRIPTION, description, clubId);
+    }
+
+    public UUID getTagId(String categoryName) {
+        List<Category> temp = jdbcTemplate.query(GET_TAG_ID, new Object[] {categoryName}, mapCategory());
+        return temp.get(0).getCategoryId();
+    }
+
+    public void addTags(String categoryName, UUID clubId) {
+        UUID id = UUID.randomUUID();
+        UUID categoryId = getTagId(categoryName);
+        jdbcTemplate.update(ADD_TAGS, id, clubId, categoryId);
+    }
+
+    public void removeTags(String categoryName, UUID clubId) {
+        UUID categoryId = getTagId(categoryName);
+        jdbcTemplate.update(REMOVE_TAGS, clubId, categoryId);
+    }
+
+    public void removeSocial(UUID clubId, String socialName) {
+        jdbcTemplate.update(REMOVE_SOCIAL, clubId, socialName);
+    }
+
+    //Check if Social Exists for Club ID by Social Name
+    public UUID getSocialIdForSocialName(String socialName, UUID clubId) {
+        List<ClubSocial> temp = jdbcTemplate.query(SOCIAL_EXISTS, new Object[] {clubId, socialName}, mapClubSocial());
+        if (temp.size() == 0) {
+            return null;
+        }
+        return temp.get(0).getClubSocialId();
+    }
+
+    public void resetPassword(UUID clubId, String password) {
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+        jdbcTemplate.update(RESET_PASSWORD, encodedPassword, clubId);
+    }
+
+    public List<Club> checkUsername(String username) {
+        return jdbcTemplate.query(VALID_USERNAME, new Object[]{username}, mapClub());
+    }
+    public List<FeaturedClubInformation> getFeaturedClubs() {
+        return jdbcTemplate.query(GET_FEATURED_CLUBS, mapFeaturedClubs());
+    }
+
+
+    public int insertResetPasswordRequest(UUID clubId, String resetCode) {
+
+        Instant expirationInstant = Instant.now().plus(ClubApplication.SECONDS_UNTIL_PASSWORD_REQUEST_EXPIRATION,
+                ChronoUnit.SECONDS);
+
+        //Expiration Instant to Timestamp
+        Timestamp expirationTimestamp = Timestamp.from(expirationInstant);
+
+        return jdbcTemplate.update(INSERT_RESET_PASSWORD, UUID.randomUUID(), clubId, resetCode,
+                expirationTimestamp);
+
+    }
+
+    //Get Reset Password Request
+    public List<ResetPasswordCreationRequest> getResetPasswordRequests(String resetCode) {
+        return jdbcTemplate.query(GET_RESET_PASSWORD_BY_CODE, new Object[]{resetCode}, mapResetPasswordRequest());
+    }
+
+    public int deleteResetPasswordCode(UUID requestId) {
+        return jdbcTemplate.update(DELETE_RESET_PASSWORD_BY_REQUEST_ID, requestId);
+    }
+
+    public List<ResetPasswordCreationRequest> getAllResetPasswordRequests() {
+        return jdbcTemplate.query(GET_ALL_RESET_PASSWORD_REQUESTS, mapResetPasswordRequest());
+    }
+
+    public int createResetPasswordRequest(UUID clubId, String resetCode) {
+        Instant expirationInstant = Instant.now().plus(ClubApplication.SECONDS_UNTIL_PASSWORD_REQUEST_EXPIRATION,
+                ChronoUnit.SECONDS);
+
+        //Expiration Instant to Timestamp
+        Timestamp expirationTimestamp = Timestamp.from(expirationInstant);
+        return jdbcTemplate.update(INSERT_RESET_PASSWORD, UUID.randomUUID(), clubId, resetCode,
+                expirationTimestamp);
     }
 
 
 
-
-
-    // Turns a column of data into Club object
-    // Turns a column of data into Club object
-    public RowMapper<Club> mapClub() {
-        return ((resultSet, i) -> {
-            UUID clubID = UUID.fromString(resultSet.getString("club_id"));
-            String email = resultSet.getString("email");
-            String encoded_password = resultSet.getString("encoded_password");
-            String name = resultSet.getString("name");
-            String description = resultSet.getString("description");
-            String profile_picture_url = resultSet.getString("profile_picture_url");
-            String meet_time = resultSet.getString("meet_time");
-            return new Club(clubID, email, encoded_password, name, description, meet_time, profile_picture_url);
-        });
-    }
-
-
-    // Login
-    public RowMapper<ClubUser> mapLogin() {
-        return ((resultSet, i) -> {
-           UUID clubID = UUID.fromString(resultSet.getString("club_id"));
-           String email = resultSet.getString("email");
-           String encoded_password = resultSet.getString("encoded_password");
-           return new ClubUser(clubID, email, encoded_password);
-        });
-    }
 
 }
+
